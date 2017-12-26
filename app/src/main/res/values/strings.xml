@@ -4,7 +4,7 @@
     <string name="email_text">Email</string>
     <string name="passw_text">Password</string>
 
-    <string name="login_bt">Login</string>
-    <string name="register_bt">Register</string>
+    <string name="create_bt">Create</string>
+    <string name="cancel_bt">Cancel</string>
 
 </resources>

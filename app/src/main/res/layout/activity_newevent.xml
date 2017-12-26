@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/registerRL"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.LoginActivity">
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.NewEventActivity">
 
 
     <EditText
@@ -37,7 +37,7 @@
         android:layout_alignStart="@+id/passwordET"
         android:layout_below="@+id/passwordET"
         android:layout_marginTop="60dp"
-        android:text="@string/login_bt" />
+        android:text="@string/create_bt" />
 
     <Button
         android:id="@+id/registerBT"
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/passwordET"
         android:layout_alignTop="@+id/loginBT"
-        android:text="@string/register_bt" />
+        android:text="@string/cancel_bt" />
 
     <TextView
         android:id="@+id/textView"
@@ -54,6 +54,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="67dp"
-        android:text="Login to the Chiriba"
+        android:text="Creating new event"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </RelativeLayout>

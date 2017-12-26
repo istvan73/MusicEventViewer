@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class NewEventActivity extends AppCompatActivity {
 
     private Button mLoginBT;
     private EditText mEmailET;
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_newevent);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -42,7 +42,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 Log.i("SIGN", "IM IN ON CLICK LISTENER!");
-                loginUser();
+                createTheEvent();
+                // after that, Istvan, you need to give back or just only to close this activity \
+                //  and also if its possible then say the main activity that he has to refresh itself bc. of new data...
             }
         });
 
@@ -53,16 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressBar.setVisibility(View.GONE);     // To Hide ProgressBar
     }
 
-    public void onClick(View view) {
-        Log.i("SIGN", "IM IN REGISTER-USER");
-        Log.i("SI", "IM IN REGISTER-USER");
-
-        if (view == mLoginBT) {
-            loginUser();
-        }
-    }
-
-    private void loginUser() {
+    private void createTheEvent() {
+        // Istvan, ive to tell you smth, you have to work in plus, to repair this fnc.
         Log.i("SIGN", "IM IN REGISTER-USER");
         String emailStr = mEmailET.getText().toString().trim();
         String passwordStr = mPasswordET.getText().toString().trim();
@@ -82,18 +76,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
 
-        mFirebaseAuth.signInWithEmailAndPassword(emailStr, passwordStr)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // successfull registering
-                            Toast.makeText(LoginActivity.this, "Success ;)!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Login failed, please try again(later) -.-", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        // saving datas to the FIREBASE
+
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
