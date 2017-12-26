@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">EventMusicPestyah_Hunyi</string>
+
+    <string name="email_text">Email</string>
+    <string name="passw_text">Password</string>
+
+    <string name="login_bt">Login</string>
+    <string name="register_bt">Register</string>
+
 </resources>
