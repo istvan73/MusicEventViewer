@@ -31,7 +31,7 @@
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/loginBT"
+        android:id="@+id/createBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/passwordET"
@@ -40,11 +40,11 @@
         android:text="@string/create_bt" />
 
     <Button
-        android:id="@+id/registerBT"
+        android:id="@+id/closeBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/passwordET"
-        android:layout_alignTop="@+id/loginBT"
+        android:layout_alignTop="@+id/createBT"
         android:text="@string/cancel_bt" />
 
     <TextView

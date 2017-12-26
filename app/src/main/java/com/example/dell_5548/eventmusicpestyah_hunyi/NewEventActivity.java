@@ -1,6 +1,5 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,9 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class NewEventActivity extends AppCompatActivity {
@@ -34,7 +30,7 @@ public class NewEventActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         RelativeLayout layout = findViewById(R.id.registerRL);
-        mLoginBT = (Button) findViewById(R.id.registerBT);
+        mLoginBT = (Button) findViewById(R.id.closeBT);
         mEmailET = (EditText) findViewById(R.id.emailET);
         mPasswordET = (EditText) findViewById(R.id.passwordET);
 
