@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "435748706763",
+    "firebase_url": "https://eventbookproject-5324c.firebaseio.com",
+    "project_id": "eventbookproject-5324c",
+    "storage_bucket": "eventbookproject-5324c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435748706763:android:cf9a5611e9571401",
+        "android_client_info": {
+          "package_name": "com.example.dell_5548.android_project_part_i_databaseconnection__dataexchange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435748706763-h1tt84hhm6hspmkfm7fd4jui69474650.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkFdNLv-7xgtqGGsMyvK4jKOUXuv2pYl4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435748706763:android:da8de51732b25e6a",
+        "android_client_info": {
+          "package_name": "com.example.dell_5548.eventmusicpestyah_hunyi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435748706763-h1tt84hhm6hspmkfm7fd4jui69474650.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkFdNLv-7xgtqGGsMyvK4jKOUXuv2pYl4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
