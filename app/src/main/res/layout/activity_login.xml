@@ -7,53 +7,43 @@
     android:id="@+id/registerRL"
     tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.LoginActivity">
 
-
-    <EditText
-        android:id="@+id/emailET"
+    <TextView
+        android:id="@+id/loginTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_above="@+id/loginBT"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:ems="10"
-        android:hint="asd@mail.com"
-        android:inputType="textEmailAddress" />
-
-    <EditText
-        android:id="@+id/passwordET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/emailET"
-        android:layout_below="@+id/emailET"
-        android:layout_marginTop="40dp"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword" />
+        android:layout_marginBottom="80dp"
+        android:text="@string/login_reg_welc_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     <Button
         android:id="@+id/loginBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/passwordET"
-        android:layout_below="@+id/passwordET"
-        android:layout_marginTop="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="150dp"
+        android:layout_marginEnd="50dp"
         android:text="@string/login_bt" />
 
     <Button
         android:id="@+id/registerBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/passwordET"
-        android:layout_alignTop="@+id/loginBT"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/loginTextView"
+        android:layout_marginStart="50dp"
         android:text="@string/register_bt" />
 
-    <TextView
-        android:id="@+id/textView"
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_loginBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="67dp"
-        android:text="Login to the Chiriba"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_alignEnd="@+id/registerBT"
+        android:layout_alignStart="@+id/loginBT"
+        android:layout_below="@+id/loginBT"
+        android:layout_marginTop="20dp">
+    </com.google.android.gms.common.SignInButton>
 </RelativeLayout>

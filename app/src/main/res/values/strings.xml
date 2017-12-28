@@ -1,10 +1,25 @@
 <resources>
     <string name="app_name">EventMusicPestyah_Hunyi</string>
 
+    <!-- REGISTER -->
+    <string name="cancel_bt">Cancel</string>
+
     <string name="email_text">Email</string>
     <string name="passw_text">Password</string>
 
-    <string name="login_bt">Login</string>
-    <string name="register_bt">Register</string>
+    <string name="login_reg_welc_text">Register/Login</string>
+    <string name="register_welc_text">Register</string>
 
+    <string name="login_bt">Login</string>
+    <string name="logout_bt">LogOut</string>
+    <string name="delete_user_bt">Delete User</string>
+    <string name="register_bt">Register</string>
+    <string name="register">Register</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">YOUR_APP_ID</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fbYOUR_APP_ID</string>
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">YOUR_CONSUMER_KEY</string>
+    <string name="twitter_consumer_secret" translatable="false">YOUR_CONSUMER_SECRET</string>
 </resources>
