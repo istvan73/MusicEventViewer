@@ -20,9 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
-
-import bolts.Task;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -45,7 +42,7 @@ public class UserProfileActivity extends AppCompatActivity {
         mNameFieldTV = (TextView) findViewById(R.id.user_nameTV);
         mLastLoginFieldTV = (TextView) findViewById(R.id.last_loginTV);
 
-        upateUI();
+        updateUI();
 
         mLogoutBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +89,18 @@ public class UserProfileActivity extends AppCompatActivity {
         setResult(RESULT_OK, datasToPassBack);
     }
 
-    private void upateUI() {
+    private void updateUI() {
         FirebaseUser fibUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (fibUser == null) return;
         String userEmailStr = fibUser.getEmail();
         String userNameStr = fibUser.getDisplayName();
-        Date userLastLog = new Date((long) (FirebaseAuth.getInstance().getCurrentUser().getMetadata().getLastSignInTimestamp() * 1000));
+        long lastLoginStamp = 0;
+        try {
+            lastLoginStamp = FirebaseAuth.getInstance().getCurrentUser().getMetadata().getLastSignInTimestamp();
+        } catch (Exception e) {
+
+        }
+        Date userLastLog = new Date((long) (lastLoginStamp * 1000));
         mEmailFieldTV.setText(userEmailStr);
         mNameFieldTV.setText(userNameStr);
         mLastLoginFieldTV.setText(userLastLog.toString());
