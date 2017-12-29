@@ -1,10 +1,40 @@
 <resources>
+
     <string name="app_name">EventMusicPestyah_Hunyi</string>
 
+    <!-- Label names -->
+
+    <string name="name">Name:</string>
+    <string name="type">Type:</string>
+    <string name="time">Time:</string>
+    <string name="location">Loc.:</string>
+    <string name="create_event">Create event:</string>
+    <string name="date">Date:</string>
     <string name="email_text">Email</string>
     <string name="passw_text">Password</string>
 
+    <!-- Fillable hints -->
+
+    <string name="event_name_hint">Event\'s name</string>
+    <string name="event_time_hint">14:00</string>
+    <string name="event_location_hint">Event\'s location. Ex.: City Center</string>
+    <string name="event_type_hint">Event\'s type. Ex.: rock, pop</string>
+    <string name="event_date_hint">2017/03/26</string>
+
+
+    <!-- Button texts-->
+
     <string name="create_bt">Create</string>
     <string name="cancel_bt">Cancel</string>
+
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="M_NODE_EVENT">Events</string>
+    <string name="M_EVENT_NAME">name</string>
+    <string name="M_EVENT_ID">AdderID</string>
+    <string name="M_EVENT_LOCATION_NAME">location_name</string>
+    <string name="M_EVENT_TYPE">type</string>
+    <string name="M_EVENT_DATE">date</string>
+    <string name="M_EVENT_TIME">time</string>
 
 </resources>
