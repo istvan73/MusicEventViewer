@@ -46,4 +46,13 @@
         android:layout_below="@+id/loginBT"
         android:layout_marginTop="20dp">
     </com.google.android.gms.common.SignInButton>
+
+    <TextView
+        android:id="@+id/user_password_recoverTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:text="@string/user_password_recover_text" />
 </RelativeLayout>

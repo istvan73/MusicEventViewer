@@ -1,15 +1,21 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -18,6 +24,8 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -31,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int M_REGISTER_REQ = 100;
     private Button mLoginBT;
     private Button mRegisterBT;
+    private TextView mPassRecoverTV;
 
     private FirebaseAuth mFirebaseAuth;
     private ProgressBar progressBar;
@@ -60,11 +69,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         // AuthUI
-        startLoginActivityForUser();
+        //startLoginActivityForUser();
 
         RelativeLayout layout = findViewById(R.id.registerRL);
         mLoginBT = (Button) findViewById(R.id.loginBT);
         mRegisterBT = (Button) findViewById(R.id.registerBT);
+        mPassRecoverTV = (TextView) findViewById(R.id.user_password_recoverTV);
 
         mLoginBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +89,57 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startRegisterActivityForUser();
             }
         });
+        mPassRecoverTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = getEmailForPassRecover();
+
+                Log.i("EMAIL", "Email settted by da USER:" + email);
+
+                //recoverPasswordForUser(email);
+            }
+        });
+    }
+
+    private String getEmailForPassRecover() {
+        final StringBuilder out = new StringBuilder();
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Please, add your email here:");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        alert.setView(input);
+        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Editable value = input.getText();
+                StringBuilder append = out.append(value.toString());
+                recoverPasswordForUser(append.toString());
+            }
+        });
+        AlertDialog alDialog = alert.create();
+        alDialog.show();
+        return out.toString();
+    }
+
+    private void recoverPasswordForUser(String email) {
+        Log.d("PASS-RECOVER", "Email senSENDING: "+ email+".");
+        mFirebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("PASS-RECOVER", "Email sent.");
+
+                            Toast.makeText(LoginActivity.this, "Email sent :).", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Log.d("PASS-RECOVER", "Email wasn`t sent.");
+                            Toast.makeText(LoginActivity.this, "Email was not sent :(.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -138,7 +199,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         if (resultCode != Activity.RESULT_OK) {
             Log.d("RESULT-FAIL", "LOGIN FAILED => " + resultCode);
-            Toast.makeText(this, data.getStringExtra("activity-type") + " Was Not Successfully made :(.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, " Was Not Successfully made :(.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (requestCode) {
@@ -149,7 +210,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 // ...
                 if (response != null)
-                Toast.makeText(this, response.getProviderType()+" login succeeded :).", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, response.getProviderType() + " login succeeded :).", Toast.LENGTH_SHORT).show();
                 // if (mFirebaseUser != null)
                 // Log.i("GOOGLE", "IM IN GOOGLE-LOGIN:" + mFirebaseUser.getUid() + ";" + mFirebaseUser.getDisplayName() + "; " + mFirebaseUser.getMetadata().getCreationTimestamp() + ";" + mFirebaseUser.getPhotoUrl());
 

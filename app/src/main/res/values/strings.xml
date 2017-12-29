@@ -9,6 +9,7 @@
 
     <string name="login_reg_welc_text">Register/Login</string>
     <string name="register_welc_text">Register</string>
+    <string name="user_password_recover_text">Forgotten password? Click HERE!</string>
 
     <string name="login_bt">Login</string>
     <string name="logout_bt">LogOut</string>
