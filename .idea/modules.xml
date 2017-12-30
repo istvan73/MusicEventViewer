@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Istvan_Munka_I.iml" filepath="$PROJECT_DIR$/Istvan_Munka_I.iml" />
-      <module fileurl="file://C:\Users\DELL_5548\ANDROID_WORKPLACE\Istvan_Munka_I\MusicEventViewer.iml" filepath="C:\Users\DELL_5548\ANDROID_WORKPLACE\Istvan_Munka_I\MusicEventViewer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MusicEventViewer.iml" filepath="$PROJECT_DIR$/MusicEventViewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\DELL_5548\ANDROID_WORKPLACE\Istvan_Munka_I\app\app.iml" filepath="C:\Users\DELL_5548\ANDROID_WORKPLACE\Istvan_Munka_I\app\app.iml" />
     </modules>
   </component>
 </project>

@@ -47,14 +47,15 @@ public class NewEventActivity extends AppCompatActivity {
 
     //Defining Keys for Json element
     String M_NODE_EVENT;
-    String M_EVENT_NAME;
+    //szemet
+    /*String M_EVENT_NAME;
     String M_EVENT_ADDER_ID;
     String M_EVENT_LOCATION_NAME;
     String M_EVENT_TYPE;
     String M_EVENT_DATE;
     String M_EVENT_TIME;
     String M_EVENT_FILE_PATH;
-
+*/
 
     //Defining Keys for Json element - finished
 
@@ -92,21 +93,11 @@ public class NewEventActivity extends AppCompatActivity {
         //Setting up Keys for Json element
 
         M_NODE_EVENT = getResources().getString(R.string.M_NODE_EVENT);
-        M_EVENT_NAME = getResources().getString(R.string.M_EVENT_NAME);
-        M_EVENT_ADDER_ID = getResources().getString(R.string.M_EVENT_ID);
-        M_EVENT_LOCATION_NAME = getResources().getString(R.string.M_EVENT_LOCATION_NAME);
-        M_EVENT_TYPE = getResources().getString(R.string.M_EVENT_TYPE);
-        M_EVENT_DATE = getResources().getString(R.string.M_EVENT_DATE);
-        M_EVENT_TIME = getResources().getString(R.string.M_EVENT_TIME);
-        M_EVENT_FILE_PATH = getResources().getString(R.string.M_EVENT_FILE_PATH);
-
-        //Setting up Keys for Json element - finished
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseAuth.signInWithEmailAndPassword("testhun@email.com","testHun");
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
 
         ConstraintLayout layout = findViewById(R.id.new_event_constraint_layout);
 
@@ -154,9 +145,6 @@ public class NewEventActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         cancelCreatorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,8 +156,7 @@ public class NewEventActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         layout.addView(progressBar, params);
-        progressBar.setVisibility(View.GONE);     // To Hide ProgressBar
-
+        progressBar.setVisibility(View.GONE);
     }
 
     /**<h2>Description:</h2><br>
@@ -180,11 +167,6 @@ public class NewEventActivity extends AppCompatActivity {
      * </ul>
      */
     private boolean createTheEvent() {
-        // Istvan, ive to tell you smth, you have to work in plus, to repair this fnc.
-        Log.i("SIGN", "IM IN CREATE EVENT");
-        // Here u have to get all the datas from the UI
-
-
 
         String eventName = eventNameET.getText().toString().trim();
         String eventType = eventTypeET.getText().toString().trim();
@@ -198,10 +180,7 @@ public class NewEventActivity extends AppCompatActivity {
             Toast.makeText(this, "User is disconneted!", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-
-
-        //dat validation
+        //Validation of input
 
         if (
                 !myValidator.isValidSimpleString("Event Name",eventName) ||
@@ -212,67 +191,17 @@ public class NewEventActivity extends AppCompatActivity {
                 ){
             return false;
         }
-
-        Map newEventDatas = new HashMap();
+        String imagePath = "";
         progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
         if (imageUri != null &&
                 imageExtension != null)
         {
-            String imagePath = "images/eventImages/";
+
             String uniqueFileName = UUID.randomUUID().toString().replaceAll("-", "_");
-            imagePath =  imagePath.concat(uniqueFileName + "." + imageExtension);
-            Toast.makeText(ctx,"File path on storage: " + imagePath,Toast.LENGTH_LONG).show();
+            imagePath =  imagePath.concat("images/eventImages/" + uniqueFileName + "." + imageExtension);
 
-            //Saving image to FirebaseStorage
-
-            StorageReference eventImageRef = mStorageRef.child(imagePath);
-            newEventDatas.put(M_EVENT_FILE_PATH,imagePath);
-            StorageMetadata metadata = new StorageMetadata.Builder()
-                    .setContentType("image/jpeg")
-                    .build();
-
-
-            UploadTask uploadTask = eventImageRef.putFile(imageUri,metadata);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(ctx,"We were unable to upload your file.",Toast.LENGTH_LONG).show();
-                    Log.i("ERR",e.getMessage());
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                }
-            });
-
+             saveImageToFirebase(imagePath);
         }
-
-
-
-        // saving datas to the FIREBASE
-
-        // Creating event with a title and an ID
-
-        // Put the local variables in a hashMap
-
-        newEventDatas.put(M_EVENT_NAME, eventName);
-        newEventDatas.put(M_EVENT_TYPE, eventType);
-        newEventDatas.put(M_EVENT_LOCATION_NAME, eventLocation);
-        newEventDatas.put(M_EVENT_TIME, eventTime);
-        newEventDatas.put(M_EVENT_DATE, eventDate);
-        newEventDatas.put(M_EVENT_ADDER_ID, eventAddedBy);
-
-
-        // Send this variable collection to the Server =>
-        //FirebaseDatabase.getInstance().getReference("Events").getReference
-            // if we want that the new event name to be created as a UniqID =>
-                // Object eventID = UUID.randomUUID().toString().replaceAll("-","").toUpperCase();
-                // mDatabaseRef.child(M_NODE_EVENT).setValue(eventID);
-                // mDatabaseRef.child(M_NODE_EVENT).getDatabase().getReference(eventID).setValue(newEventDatas);
-
-            // but if we want that the new event to be created as a name =>
-        //mDatabaseRef.child(M_NODE_EVENT).child(eventName);
 
         // This is the new method for pushing an event to the FireBase - Database
         EventManager eventManager = new EventManager(mDatabaseRef,M_NODE_EVENT)
@@ -283,28 +212,53 @@ public class NewEventActivity extends AppCompatActivity {
                         .LocationName(eventLocation)
                         .Time(eventTime)
                         .Date(eventDate)
+                        .ImagePath(imagePath)
                         .build());
 
-        //  This was the old method for pushing events...
-        // mDatabaseRef.getDatabase().getReference(M_NODE_EVENT).push().setValue(newEventDatas);
+        eventManager.PushDataToFirebase();
 
+        Toast.makeText(this, "Event created successfully!", Toast.LENGTH_SHORT).show();
 
-
-        //events.getDatabase().getReference("")
-
-        /*** Instructions:
-         * 1. mDatabaseRef = FirebaseDatabase.getinst.getref event.cid = UUID.randomUUID().toString().replaceAll("-","").toUpperCase();
-         * 2. child event. child userList
-         * 3. firabeseStorage.getinst.getref
-         * 4. kep: storageRef.child foto . child uri . getLastPathFragmeent
-         * @param
-         * @return
-         *
-         * */
-        Toast.makeText(this, "Event creates successfully!", Toast.LENGTH_SHORT).show();
         return true;
     }
 
+
+    private void saveImageToFirebase(String imagePath){
+        StorageReference eventImageRef = mStorageRef.child(imagePath);
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType("image/jpeg")
+                .build();
+
+
+        UploadTask uploadTask = eventImageRef.putFile(imageUri,metadata);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(ctx,"We were unable to upload your file.",Toast.LENGTH_LONG).show();
+                Log.i("ERR",e.getMessage());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            }
+        });
+
+    }
+
+
+    /**
+     * <h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the Request code is RESULT_LOAD_IMAGE, it fetches the image's data into the imageUri variable.</li>
+     *     <li>The image's extension will be stored in the imageExtension variable.</li>
+     * </ul>
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

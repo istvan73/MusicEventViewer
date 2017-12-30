@@ -12,6 +12,7 @@ public class DataPackEvent {
     private String mName;
     private String mTime;
     private String mType;
+    private String mImagePath;
 
     private DataPackEvent(DataPackEventBuilder builder) {
         this.mCreatorId = builder.mCreatorId;
@@ -20,6 +21,7 @@ public class DataPackEvent {
         this.mName = builder.mName;
         this.mTime = builder.mTime;
         this.mType = builder.mType;
+        this.mImagePath = builder.mImagePath;
     }
 
     public String getCreatorId() {
@@ -46,6 +48,9 @@ public class DataPackEvent {
         return mType;
     }
 
+    public String getImagePath() { return mImagePath; }
+
+
     public static class DataPackEventBuilder {
         private final String mCreatorId;
         private String mDate;
@@ -53,6 +58,7 @@ public class DataPackEvent {
         private String mName;
         private String mTime;
         private String mType;
+        private String mImagePath;
 
         public DataPackEventBuilder(String CreatorId) {
             this.mCreatorId = CreatorId;
@@ -80,6 +86,12 @@ public class DataPackEvent {
 
         public DataPackEventBuilder Type(String Type) {
             this.mType = Type;
+            return this;
+        }
+
+        public DataPackEventBuilder ImagePath(String mImagePath) {
+
+            this.mImagePath = mImagePath.length()==0?mImagePath:null;
             return this;
         }
 

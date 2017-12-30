@@ -11,7 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class EventManager {
     private DatabaseReference mDatabaseRef;
     private DataPackEvent mEvent;
-    private String M_NODE_EVENT = "Event";
+    private String M_NODE_EVENT;
 
     public EventManager(DatabaseReference fbDatabase, String NODE_EVENT) {
         this.mDatabaseRef = fbDatabase;
