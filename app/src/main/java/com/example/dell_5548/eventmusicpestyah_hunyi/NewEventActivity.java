@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.EventManager;
+import com.example.dell_5548.eventmusicpestyah_hunyi.DatabaseClasses.DataPackEvent;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -271,7 +273,23 @@ public class NewEventActivity extends AppCompatActivity {
 
             // but if we want that the new event to be created as a name =>
         //mDatabaseRef.child(M_NODE_EVENT).child(eventName);
-        mDatabaseRef.getDatabase().getReference(M_NODE_EVENT).push().setValue(newEventDatas);
+
+        // This is the new method for pushing an event to the FireBase - Database
+        EventManager eventManager = new EventManager(mDatabaseRef,M_NODE_EVENT)
+                .SetNewEvent(new DataPackEvent
+                        .DataPackEventBuilder(eventAddedBy)
+                        .Name(eventName)
+                        .Type(eventType)
+                        .LocationName(eventLocation)
+                        .Time(eventTime)
+                        .Date(eventDate)
+                        .build());
+
+        //  This was the old method for pushing events...
+        // mDatabaseRef.getDatabase().getReference(M_NODE_EVENT).push().setValue(newEventDatas);
+
+
+
         //events.getDatabase().getReference("")
 
         /*** Instructions:
