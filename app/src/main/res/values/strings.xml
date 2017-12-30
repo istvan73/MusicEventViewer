@@ -36,5 +36,8 @@
     <string name="M_EVENT_TYPE">type</string>
     <string name="M_EVENT_DATE">date</string>
     <string name="M_EVENT_TIME">time</string>
+    <string name="uploadedImageMissing">none</string>
+    <string name="uploadedImageLabel">Uploaded image:</string>
+    <string name="M_EVENT_FILE_PATH">FilePath</string>
 
 </resources>

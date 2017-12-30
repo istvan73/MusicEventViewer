@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_event_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/new_event_constraint_layout"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.NewEventActivity">
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.NewEventActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+    <TextView
+        android:id="@+id/uploadedImageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="44dp"
+        android:labelFor="@+id/eventTime"
+        android:text="@string/uploadedImageMissing"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/uploadedImageLabel"
+        app:layout_constraintTop_toBottomOf="@+id/eventTimeLabel" />
+
+    <TextView
+        android:id="@+id/uploadedImageLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="44dp"
+        android:labelFor="@+id/eventTime"
+        android:text="@string/uploadedImageLabel"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventTimeLabel" />
+
+    <Button
+        android:id="@+id/uploadImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
+        android:text="Upload Image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uploadedImageLabel" />
 
     <TextView
         android:id="@+id/eventNameLabel"
@@ -25,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="40dp"
         android:labelFor="@+id/eventTime"
         android:text="@string/type"
         android:textSize="18sp"
@@ -37,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="44dp"
         android:labelFor="@+id/eventTime"
         android:text="@string/location"
         android:textSize="18sp"
@@ -65,12 +99,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/event_time_hint"
         android:inputType="time"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.411"
+        app:layout_constraintHorizontal_bias="0.431"
         app:layout_constraintStart_toEndOf="@+id/eventTimeLabel"
         app:layout_constraintTop_toBottomOf="@+id/eventDate" />
 
@@ -79,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="44dp"
         android:labelFor="@+id/eventTime"
         android:text="@string/time"
         android:textSize="18sp"
@@ -92,12 +126,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/event_location_hint"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.415"
+        app:layout_constraintHorizontal_bias="0.43"
         app:layout_constraintStart_toEndOf="@+id/eventLocationLabel"
         app:layout_constraintTop_toBottomOf="@+id/eventType" />
 
@@ -107,12 +141,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/event_type_hint"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.366"
+        app:layout_constraintHorizontal_bias="0.383"
         app:layout_constraintStart_toEndOf="@+id/eventTypeLabel"
         app:layout_constraintTop_toBottomOf="@+id/eventName" />
 
@@ -136,7 +170,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="44dp"
         android:labelFor="@+id/eventTime"
         android:text="@string/date"
         android:textSize="18sp"
@@ -149,12 +183,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/event_date_hint"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.344"
+        app:layout_constraintHorizontal_bias="0.26"
         app:layout_constraintStart_toEndOf="@+id/eventDateLabel"
         app:layout_constraintTop_toBottomOf="@+id/eventLocation" />
 
@@ -162,19 +196,19 @@
         android:id="@+id/createButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
         android:text="@string/create"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventTimeLabel" />
+        app:layout_constraintStart_toEndOf="@+id/uploadImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/uploadedImageName" />
 
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="32dp"
         android:text="@string/cancel"
         app:layout_constraintStart_toEndOf="@+id/createButton"
-        app:layout_constraintTop_toBottomOf="@+id/eventTime" />
+        app:layout_constraintTop_toBottomOf="@+id/uploadedImageName" />
 </android.support.constraint.ConstraintLayout>
