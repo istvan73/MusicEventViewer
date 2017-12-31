@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/bandDialog_Layout">
+    <ImageView
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:scaleType="center"
+        android:background="#FFFFBB33"
+        android:contentDescription="@string/bandDialog_app_name" />
+
+    <EditText
+        android:id="@+id/bandDialog_nameET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/bandDialog_name_text"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/bandDialog_membersET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:hint="@string/bandDialog_members_text"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/bandDialog_typeET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:hint="@string/bandDialog_type_text"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/bandDialog_refLinkET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:hint="@string/bandDialog_ref_link_text"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/bandDialog_musicsET"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif"
+        android:hint="@string/bandDialog_musics_text"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/bandDialog_createBT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create" />
+</LinearLayout>
