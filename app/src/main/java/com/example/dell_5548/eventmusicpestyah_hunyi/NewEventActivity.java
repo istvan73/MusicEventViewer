@@ -1,6 +1,8 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -8,10 +10,12 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -291,3 +295,148 @@ public class NewEventActivity extends AppCompatActivity {
 
     }
 }
+
+
+/**
+ * package com.example.dell_5548.extramodules;
+
+ import android.app.Dialog;
+ import android.content.DialogInterface;
+ import android.support.v7.app.AlertDialog;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.LinearLayout;
+
+ import java.lang.reflect.Array;
+ import java.util.Arrays;
+ import java.util.List;
+
+ public class MainActivity extends AppCompatActivity {
+
+ private Button mNewBandBT;
+ private Button myTestButton;
+ private View.OnClickListener myCustomButtonListener;
+
+ /*
+ final EditText bandNameET;
+ final EditText bandTypeET;
+ final EditText bandRefLinkET;
+ final EditText bandMembersET;
+ final EditText bandMusicsET;
+ // itt vege * /
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    // Find the EditText fields
+    final View myCustomView  = LayoutInflater.from(this).inflate(R.layout.activity_band_dialog, null);
+
+    final EditText bandNameET = (EditText) myCustomView.findViewById(R.id.bandDialog_nameET);
+    final EditText bandTypeET = (EditText) myCustomView.findViewById(R.id.bandDialog_typeET);
+    final EditText bandRefLinkET = (EditText) myCustomView.findViewById(R.id.bandDialog_refLinkET);
+    final EditText bandMembersET = (EditText) myCustomView.findViewById(R.id.bandDialog_membersET);
+    final EditText bandMusicsET = (EditText) myCustomView.findViewById(R.id.bandDialog_musicsET);
+
+    myTestButton = (Button) myCustomView.findViewById(R.id.bandDialog_createBT);
+    Button.OnClickListener myCustomButtonListener = new Button.OnClickListener(){
+
+        @Override
+        public void onClick(View view) {
+            Log.i("RESULT", "Result="+ bandNameET.getText().toString());
+        }
+    };
+    myTestButton.setOnClickListener(myCustomButtonListener);
+
+    mNewBandBT = (Button) findViewById(R.id.create_bandBT);
+    mNewBandBT.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            // Set the dialog title
+            builder.setTitle(R.string.bandDialog_app_name);
+            builder.setView(R.layout.activity_band_dialog);
+
+
+
+                        /*.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                String bandName = bandNameET.getText().toString();
+                                String bandType = bandTypeET.getText().toString();
+                                String bandRefLink = bandRefLinkET.getText().toString();
+                                List<String> bandMembers = Arrays.asList(bandMembersET.getText().toString().split(","));
+                                List<String> bandMusics = Arrays.asList(bandMusicsET.getText().toString().split(","));
+
+                                Log.i("TEXT_S", "EditText field values:"
+                                        + bandName + "; "
+                                        + bandType + "; "
+                                        + bandRefLink + "; "
+                                        + bandMembers + "; "
+                                        + bandMusics);
+                            }
+                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+// itt vege * /
+
+
+Dialog myDialog = builder.create();
+            myDialog.show();
+        }
+    });
+
+}
+
+
+
+
+    private Dialog createBandDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set the dialog title
+        builder.setTitle(R.string.bandDialog_app_name);
+        builder.setView(R.layout.activity_band_dialog)
+                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+/*
+                        String bandName = bandNameET.getText().toString();
+                        String bandType = bandTypeET.getText().toString();
+                        String bandRefLink = bandRefLinkET.getText().toString();
+                        List<String> bandMembers = Arrays.asList(bandMembersET.getText().toString().split(","));
+                        List<String> bandMusics = Arrays.asList(bandMusicsET.getText().toString().split(","));
+
+                        Log.i("TEXT_S", "EditText field values:"
+                                + bandName + "; "
+                                + bandType + "; "
+                                + bandRefLink + "; "
+                                + bandMembers + "; "
+                                + bandMusics);
+// itt vege * /
+
+}
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        return builder.create();
+    }
+}
+*/

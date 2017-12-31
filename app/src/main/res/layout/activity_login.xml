@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/registerRL"
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.LoginActivity">
+
+    <TextView
+        android:id="@+id/loginTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/loginBT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="113dp"
+        android:text="@string/login_reg_welc_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <Button
+        android:id="@+id/loginBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="195dp"
+        android:layout_marginEnd="49dp"
+        android:text="@string/login_bt" />
+
+    <Button
+        android:id="@+id/registerBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/loginTextView"
+        android:layout_marginStart="50dp"
+        android:text="@string/register_bt" />
+
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_loginBT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/registerBT"
+        android:layout_alignStart="@+id/loginBT"
+        android:layout_below="@+id/loginBT"
+        android:layout_marginTop="20dp">
+    </com.google.android.gms.common.SignInButton>
+
+    <TextView
+        android:id="@+id/user_password_recoverTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/registerBT"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
+        android:text="@string/user_password_recover_text" />
+</RelativeLayout>

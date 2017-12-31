@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="50dp"
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.UserProfileActivity">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="100dp"
+        android:layout_height="120dp"
+        android:id="@+id/prof_picIV"
+        android:src="@drawable/examp_photo"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="2dp">
+
+        <TextView
+            android:id="@+id/user_nameTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name display"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/user_emailTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email display"
+            android:textSize="16dp"
+            android:gravity="center"
+            />
+        <Button
+            android:id="@+id/logoutBT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/logout_bt"
+            />
+        <TextView
+            android:id="@+id/last_visit_textTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last visited:"
+            android:textSize="16dp"
+            android:gravity="center"
+            />
+        <TextView
+            android:id="@+id/last_loginTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last visited:"
+            android:textSize="16dp"
+            android:gravity="center"
+            />
+        <Button
+            android:id="@+id/delete_userBT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="220dp"
+            android:text="@string/delete_user_bt"
+            />
+    </LinearLayout>
+</LinearLayout>
