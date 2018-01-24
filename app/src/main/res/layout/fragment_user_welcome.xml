@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/oldschoolSecondBackground"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.UserWelcomeFragment">
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.UserWelcomeFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

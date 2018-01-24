@@ -5,7 +5,7 @@
     android:id="@+id/new_event_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.NewEventActivity"
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.NewEventActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <TextView

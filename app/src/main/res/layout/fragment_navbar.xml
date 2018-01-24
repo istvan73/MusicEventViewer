@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.NavbarFragment">
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.NavbarFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

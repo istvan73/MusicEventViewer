@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:layout_marginLeft="20dp"
     android:layout_marginTop="50dp"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.UserProfileActivity">
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.UserProfileActivity">
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="100dp"

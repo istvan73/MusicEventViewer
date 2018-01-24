@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/oldschoolBackground"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.MainActivity"
+    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.MainActivity"
     tools:layout_editor_absoluteY="81dp">
 
 
 
     <fragment
         android:id="@+id/navbarFragment"
-        android:name="com.example.dell_5548.eventmusicpestyah_hunyi.NavbarFragment"
+        android:name="com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.NavbarFragment"
         android:layout_width="416dp"
         android:layout_height="52dp"
         android:layout_marginEnd="8dp"
@@ -40,8 +40,8 @@
         android:id="@+id/addNewEventButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="244dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="248dp"
+        android:layout_marginTop="16dp"
         android:text="Add New Event"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/event_recycler_view" />

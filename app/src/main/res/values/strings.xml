@@ -49,6 +49,7 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_user_profile">UserProfileActivity</string>
 
+
     <!-- Huni's stuff -->
     <string name="login_reg_welc_text">Register/Login</string>
     <string name="register_welc_text">Register</string>
@@ -82,11 +83,9 @@
     <string name="cancel_bt">Cancel</string>
 
 
-
     <!-- Fillable hints -->
     <string name="event_viewer_eventName_hin">Event\'s name</string>
     <string name="event_viewer_subscribe">Subscribe to the event</string>
-
 
 
     <!-- new resources -->
@@ -94,5 +93,7 @@
 
     <!-- Label names -->
     <string name="event_text_view">Event:</string>
+    <string name="title_activity_show_event">ShowEventActivity</string>
+    <string name="title_activity_edit_event">EditEventActivity</string>
 
 </resources>

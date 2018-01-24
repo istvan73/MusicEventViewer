@@ -9,11 +9,17 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.dell_5548.eventmusicpestyah_hunyi.DatabaseClasses.DataPackEvent;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,8 +32,8 @@ import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHolder>
 implements Filterable{
-    private List<DataPackEvent> eventList;
-    private List<DataPackEvent> eventListFiltered;
+    private List<EventModel> eventList;
+    private List<EventModel> eventListFiltered;
     private Context ctx;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference mStorageRef = storage.getReference();
@@ -39,6 +45,7 @@ implements Filterable{
 
         public MyViewHolder(View itemView) {
             super(itemView);
+
             eventName = (TextView) itemView.findViewById(R.id.event_card_name);
             eventType = (TextView) itemView.findViewById(R.id.event_card_type);
             eventLocation = (TextView) itemView.findViewById(R.id.event_card_location);
@@ -54,11 +61,77 @@ implements Filterable{
                 }
             });
 
+
         }
     }
 
-    public EventsAdapter(Context ctx,List<DataPackEvent> eventList, EventAdapterListener listener){
-        this.eventList = eventList;
+    public EventsAdapter(final Context ctx, DatabaseReference eventsDatabase, EventAdapterListener listener){
+        this.eventList = new ArrayList<EventModel>();
+        eventsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                eventList.clear();
+                for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()){
+                    EventModel eventModel = eventSnapshot.getValue(EventModel.class);
+                    eventModel.setKey(eventSnapshot.getKey());
+                    eventList.add(eventModel);
+                }
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(ctx,"Database cannot be read!",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        eventsDatabase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                EventModel eventModel = dataSnapshot.getValue(EventModel.class);
+                eventModel.setKey(dataSnapshot.getKey());
+                eventList.add(eventModel);
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                EventModel newModel = dataSnapshot.getValue(EventModel.class);
+                String key = dataSnapshot.getKey();
+                for (EventModel eventModel: eventList) {
+                    if(key.equals(eventModel.getKey())){
+                        eventList.remove(eventModel);
+                        eventList.add(newModel);
+                        notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String oldKey = dataSnapshot.getKey();
+                for (EventModel eventModel: eventList) {
+                    if(oldKey.equals(eventModel.getKey())){
+                        eventList.remove(eventModel);
+                        notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         this.eventListFiltered = eventList;
         this.ctx = ctx;
         this.listener = listener;
@@ -69,17 +142,16 @@ implements Filterable{
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_row,parent,false);
         return new MyViewHolder(itemView);
     }
-
     @Override
     public void onBindViewHolder(EventsAdapter.MyViewHolder holder, int position) {
-        DataPackEvent dataPackEvent = eventListFiltered.get(position);
-        holder.eventName.setText(dataPackEvent.getName());
-        holder.eventType.setText(dataPackEvent.getType());
-        holder.eventDate.setText(dataPackEvent.getDate());
-        holder.eventTime.setText(dataPackEvent.getTime());
-        holder.eventLocation.setText(dataPackEvent.getLocationName());
-        if (dataPackEvent.getImagePath()!= null) {
-            StorageReference imageRef = mStorageRef.child(dataPackEvent.getImagePath());
+        EventModel eventModel = eventListFiltered.get(position);
+        holder.eventName.setText(eventModel.getName());
+        holder.eventType.setText(eventModel.getType());
+        holder.eventDate.setText(eventModel.getDate());
+        holder.eventTime.setText(eventModel.getTime());
+        holder.eventLocation.setText(eventModel.getLocationName());
+        if (eventModel.getImagePath()!= null) {
+            StorageReference imageRef = mStorageRef.child(eventModel.getImagePath());
             Glide.with(ctx)
                     .using(new FirebaseImageLoader())
                     .load(imageRef)
@@ -119,8 +191,8 @@ implements Filterable{
                 if (charString.isEmpty()){
                     eventListFiltered = eventList;
                 }else{
-                    List<DataPackEvent> filteredList = new ArrayList<>();
-                    for(DataPackEvent row : eventList){
+                    List<EventModel> filteredList = new ArrayList<>();
+                    for(EventModel row : eventList){
                         if (row.getName().toLowerCase().contains(charString.toLowerCase()) ||
                                 row.getType().contains(charSequence)){
                             filteredList.add(row);
@@ -135,7 +207,7 @@ implements Filterable{
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                eventListFiltered = (ArrayList<DataPackEvent>) filterResults.values;
+                eventListFiltered = (ArrayList<EventModel>) filterResults.values;
                 notifyDataSetChanged();
             }
 
