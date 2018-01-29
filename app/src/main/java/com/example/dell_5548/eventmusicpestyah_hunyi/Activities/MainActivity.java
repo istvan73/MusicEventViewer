@@ -21,29 +21,42 @@ import android.widget.Toast;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Adapters.EventAdapterListener;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Adapters.EventsAdapter;
 import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.EventManager;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.NavbarFragment;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.LoginOrRegisterFragment;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.UserWelcomeFragment;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity implements EventAdapterListener,
         LoginOrRegisterFragment.OnButtonClickedListener,
-        UserWelcomeFragment.OnButtonClickedListener {
+        UserWelcomeFragment.OnButtonClickedListener,
+        NavbarFragment.onNavbarButtonClickedListener
+{
 
     Context ctx = this;
     private final int CREATE_EVENT_REQUEST_CODE = 0;
@@ -51,31 +64,35 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
     private final int SHOW_EVENT_REQUEST_CODE = 2;
     private final String NEW_EVENT_CREATED = "NEW_EVENT_CREATED";
     private final String EVENT_KEY = "EVENT_KEY";
+    private int activePage;
 
     private List<EventModel> eventList;
+    private ValueEventListener activeEventListener;
+    private ValueEventListener archiveEventListener;
+    private ValueEventListener subscribedEventListener;
+    private ChildEventListener activeChildEventListener;
+    private ChildEventListener archiveChildEventListener;
+    private ChildEventListener subscribedChildEventListener;
+
+
+
     private RecyclerView recyclerView;
     private EventsAdapter mAdapter;
     private android.support.v7.widget.SearchView searchView;
     private String M_NODE_EVENT;
+    private String M_NODE_USER_EVENTS;
 
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mEventsReference;
+    private DatabaseReference mUserEventsReference = null;
 
     private Button addEventButton;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        eventList = new ArrayList<>();
-
-        //Set up others
-
-        M_NODE_EVENT = getResources().getString(R.string.M_NODE_EVENT);
-
-        //Set up firebase
+    private void setFirebase(){
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseAuth = FirebaseAuth.getInstance();
+
         if (AuthUI.getInstance() != null) {
             boolean result = AuthUI.getInstance()
                     .signOut(this)
@@ -89,33 +106,62 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
         }
 
         mFirebaseAuth.signInWithEmailAndPassword("testhun@email.com", "testHun");
+    }
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+    private void setOthers(){
+        M_NODE_EVENT = getResources().getString(R.string.M_NODE_EVENT);
+        M_NODE_USER_EVENTS = getResources().getString(R.string.M_NODE_USER_EVENTS);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        eventList = new ArrayList<>();
+        activePage = 1;
+        //Set up others
+
+        setOthers();
+        setEventListeners();
+        setFirebase();
+
         mEventsReference = mDatabaseReference.child(M_NODE_EVENT);
 
 
 
         //Set up RecyclerView
         recyclerView = (RecyclerView) findViewById(R.id.event_recycler_view);
-        mAdapter = new EventsAdapter(ctx, mEventsReference, this);
+        mAdapter = new EventsAdapter(ctx, eventList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ctx);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(ctx, LinearLayoutManager.VERTICAL));
 
-
         recyclerView.setAdapter(mAdapter);
+
+        mEventsReference.addValueEventListener(activeEventListener);
+        mEventsReference.addChildEventListener(activeChildEventListener);
 
         //prepareTestEventData();
 
 
         //Set up topmost fragment
-
-        LoginOrRegisterFragment loginOrRegisterFragment = new LoginOrRegisterFragment();
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.loginOrWelcomeFrameContainer, loginOrRegisterFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+//Y
+        if (mFirebaseAuth.getCurrentUser() != null) {
+            UserWelcomeFragment userWelcomeFragment = new UserWelcomeFragment();
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.loginOrWelcomeFrameContainer, userWelcomeFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            mUserEventsReference = mDatabaseReference.child(M_NODE_USER_EVENTS).child(mFirebaseAuth.getUid());
+        }else {
+            LoginOrRegisterFragment loginOrRegisterFragment = new LoginOrRegisterFragment();
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.loginOrWelcomeFrameContainer, loginOrRegisterFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            mUserEventsReference = null;
+        }
 
         addEventButton = (Button) findViewById(R.id.addNewEventButton);
         addEventButton.setOnClickListener(new View.OnClickListener() {
@@ -124,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
                 if (mFirebaseAuth.getCurrentUser() == null) {
                     Toast.makeText(ctx, "You need to log in first", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent addNewEventIntent = new Intent(ctx, NewEventActivity.class);
-                    startActivityForResult(addNewEventIntent, CREATE_EVENT_REQUEST_CODE);
+                    Intent createEventIntent = new Intent(ctx, CreateEventActivity.class);
+                    startActivityForResult(createEventIntent, CREATE_EVENT_REQUEST_CODE);
                 }
             }
         });
@@ -133,7 +179,12 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
     }
 
 
-
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>Checks whether the user is logged in or not. It switches frame correspondingly.</li>
+     * </ul>
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -143,6 +194,14 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
             transaction.replace(R.id.loginOrWelcomeFrameContainer, userWelcomeFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+            mUserEventsReference = mDatabaseReference.child(M_NODE_USER_EVENTS).child(mFirebaseAuth.getUid());
+        }else {
+            LoginOrRegisterFragment loginOrRegisterFragment = new LoginOrRegisterFragment();
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.loginOrWelcomeFrameContainer, loginOrRegisterFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+            mUserEventsReference = null;
         }
 
 
@@ -222,14 +281,28 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
         super.onBackPressed();
     }
 
-
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the user selects an event, the {@link CreateEventActivity} will be shown</li>
+     * </ul>
+     * @param event
+     */
     @Override
     public void onEventSelected(EventModel event) {
         Intent showEventIntent = new Intent(ctx, ShowEventActivity.class);
-        showEventIntent.putExtra("EVENT_KEY",event.getKey());
+        showEventIntent.putExtra(EVENT_KEY,event.getKey());
         startActivityForResult(showEventIntent, SHOW_EVENT_REQUEST_CODE);
     }
 
+
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>If a button is pressed in the topmost fragment, redirects us to the corresponding activity</li>
+     * </ul>
+     * @param buttonCode
+     */
     @Override
     public void onButtonClicked(int buttonCode) {
         switch (buttonCode) {
@@ -247,7 +320,13 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
 
     }
 
-
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>If the user is logged in, he/she can either watch one's profile, or log out.</li>
+     * </ul>
+     * @param buttonCode
+     */
     @Override
     public void onButtonClickedTop(int buttonCode) {
         switch (buttonCode) {
@@ -278,4 +357,223 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
                 break;
         }
     }
+
+    private void clearListeners(){
+        switch (activePage){
+            case 0:
+                mUserEventsReference.removeEventListener(activeEventListener);
+                mUserEventsReference.removeEventListener(activeChildEventListener);
+                break;
+
+            case 1:
+                mEventsReference.removeEventListener(activeEventListener);
+                mEventsReference.removeEventListener(activeChildEventListener);
+                break;
+
+            case 2:
+                mEventsReference.removeEventListener(activeEventListener);
+                mEventsReference.removeEventListener(activeChildEventListener);
+                break;
+        }
+    }
+
+
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>Depending on the buttonCode, one of three list will be displayed in the {@link RecyclerView}:</li>
+     *     <ul>
+     *         <li>Subscribed = The user's own events</li>
+     *         <li>Active = Activities after the current date and time</li>
+     *         <li>Archive= Activities before the current date and time</li>
+     *     </ul>
+     * </ul>
+     * @param buttonCode
+     */
+    @Override
+    public void onNavbarButtonClicked(int buttonCode) {
+        switch (buttonCode){
+            case 0:
+                if (mFirebaseAuth.getCurrentUser() == null || mUserEventsReference == null){
+                    Toast.makeText(ctx,"You must log in first",Toast.LENGTH_SHORT).show();
+                }else {
+                    clearListeners();
+                    activePage = 0;
+                    mUserEventsReference.addValueEventListener(activeEventListener);
+                    mUserEventsReference.addChildEventListener(activeChildEventListener);
+                }
+
+                break;
+
+            case 1:
+                clearListeners();
+                activePage = 1;
+                mEventsReference.addValueEventListener(activeEventListener);
+                mEventsReference.addChildEventListener(activeChildEventListener);
+
+                break;
+
+            case 2:
+                clearListeners();
+                activePage = 2;
+                mEventsReference.addValueEventListener(activeEventListener);
+                mEventsReference.addChildEventListener(activeChildEventListener);
+                break;
+
+        }
+    }
+
+
+    private boolean isEarlierThanNow(String date, String time){
+        Calendar calendar = Calendar.getInstance();
+
+        String eventDate = date + " " + time;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+        String currentDate = df.format(calendar.getTime());
+        if (eventDate.compareTo(currentDate)>0){
+            return false;
+        }
+        return true;
+    }
+
+    private void setEventListeners(){
+        activeEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                eventList.clear();
+                for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()){
+                    EventModel eventModel = eventSnapshot.getValue(EventModel.class);
+                    eventModel.setKey(eventSnapshot.getKey());
+
+                    switch (activePage){
+                        case 0:
+                            eventList.add(eventModel);
+                            break;
+
+                        case 1:
+                            if (!isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                eventList.add(eventModel);
+                            }
+                            break;
+
+                        case 2:
+                            if (isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                eventList.add(eventModel);
+                            }
+                            break;
+                    }
+
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(ctx,"Database cannot be read!",Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        activeChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                EventModel eventModel = dataSnapshot.getValue(EventModel.class);
+                eventModel.setKey(dataSnapshot.getKey());
+                switch (activePage){
+                    case 0:
+                        eventList.add(eventModel);
+                        break;
+
+                    case 1:
+                        if (!isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                            eventList.add(eventModel);
+                        }
+                        break;
+
+                    case 2:
+                        if (isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                            eventList.add(eventModel);
+                        }
+                        break;
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                EventModel newModel = dataSnapshot.getValue(EventModel.class);
+                String key = dataSnapshot.getKey();
+                newModel.setKey(key);
+                for (EventModel eventModel: eventList) {
+                    if(key.equals(eventModel.getKey())){
+
+                        switch (activePage){
+                            case 0:
+                                eventList.remove(eventModel);
+                                eventList.add(eventModel);
+                                break;
+
+                            case 1:
+                                if (!isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                    eventList.remove(eventModel);
+                                    eventList.add(eventModel);
+                                }
+                                break;
+
+                            case 2:
+                                if (isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                    eventList.remove(eventModel);
+                                    eventList.add(eventModel);
+                                }
+                                break;
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String oldKey = dataSnapshot.getKey();
+                for (EventModel eventModel: eventList) {
+                    if(oldKey.equals(eventModel.getKey())){
+                        switch (activePage){
+                            case 0:
+                                eventList.remove(eventModel);
+                                break;
+
+                            case 1:
+                                if (!isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                    eventList.remove(eventModel);
+                                }
+                                break;
+
+                            case 2:
+                                if (isEarlierThanNow(eventModel.getDate(),eventModel.getTime())){
+                                    eventList.remove(eventModel);
+                                }
+                                break;
+                        }
+                        mAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+//        archiveChildEventListener;
+//        subscribedChildEventListener;
+    }
+
+
 }

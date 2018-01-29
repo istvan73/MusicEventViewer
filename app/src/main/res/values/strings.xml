@@ -27,7 +27,7 @@
     <string name="event_time_hint">14:00</string>
     <string name="event_location_hint">Event\'s location. Ex.: City Center</string>
     <string name="event_type_hint">Event\'s type. Ex.: rock, pop</string>
-    <string name="event_date_hint">2017/03/26</string>
+    <string name="event_date_hint">not set</string>
 
     <!-- Button texts-->
 
@@ -95,5 +95,8 @@
     <string name="event_text_view">Event:</string>
     <string name="title_activity_show_event">ShowEventActivity</string>
     <string name="title_activity_edit_event">EditEventActivity</string>
+    <string name="title_activity_create_event">CreateEventActivity</string>
+    <string name="M_NODE_USER_EVENTS">User_Events</string>
+    <string name="title_activity_get_location">Map</string>
 
 </resources>

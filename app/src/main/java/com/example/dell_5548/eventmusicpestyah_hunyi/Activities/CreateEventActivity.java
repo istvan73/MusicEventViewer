@@ -1,31 +1,46 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi.Activities;
 
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.EventManager;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.DatePickerFragment;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.TimePickerDialog;
+import com.example.dell_5548.eventmusicpestyah_hunyi.GetLocationActivity;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,62 +49,94 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
+public class CreateEventActivity extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener,
+        android.app.TimePickerDialog.OnTimeSetListener
+{
 
-public class NewEventActivity extends AppCompatActivity {
-
-//    Buttons
-    private Button createEventButton;
-    private Button cancelCreatorButton;
+    //    Buttons
+    private FloatingActionButton fab;
     private Button uploadImageButton;
+    private Button setDateButton;
+    private Button setTimeButton;
+    private Button setMapButton;
 
-//    EditTexts
-    private EditText eventNameET;
-    private EditText eventTypeET;
-    private EditText eventLocationET;
-    private EditText eventDateET;
-    private EditText eventTimeET;
+    //    EditTexts
+    private EditText mEventName;
+    private EditText mEventType;
+    private EditText mEventLocation;
+    private EditText mEventDescription;
 
-//    Labels
-    private TextView imageNameLabel;
+    private TextView mEventDate;
+    private TextView mEventTime;
 
-//    Firebase
+    //    Firebase
     private FirebaseAuth mFirebaseAuth;
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
 
 
-//    Others
+    //    Others
     private Context ctx = this;
     private static int RESULT_LOAD_IMAGE = 2;
     private String imageExtension = null;
     private Uri imageUri = null;
     private String M_NODE_EVENT;
+    private String M_NODE_USER_EVENTS;
     private MusicEventValidator myValidator;
     private final String NEW_EVENT_CREATED = "NEW_EVENT_CREATED";
     private ProgressBar progressBar;
+    private ImageView mEventImage;
+    private final int MAP_LOCATION_REQUEST_CODE = 0;
+
 
     private void setButtons(){
-        createEventButton = (Button) findViewById(R.id.createButton);
-        cancelCreatorButton = (Button) findViewById(R.id.cancelButton);
-        uploadImageButton = (Button) findViewById(R.id.uploadImageButton);
-
+        uploadImageButton = (Button) findViewById(R.id.createUpdateImageButton);
+        setDateButton = (Button) findViewById(R.id.createSetDateButton);
+        setTimeButton = (Button) findViewById(R.id.createSetTimeButton);
+        setMapButton = (Button) findViewById(R.id.createSetMapButton);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setEditTexts(){
 
         //Creating references for EditText views
 
-        eventNameET = (EditText) findViewById(R.id.eventName);
-        eventTypeET = (EditText) findViewById(R.id.eventType);
-        eventLocationET = (EditText) findViewById(R.id.eventLocation);
-        eventDateET = (EditText) findViewById(R.id.eventDate);
-        eventTimeET = (EditText) findViewById(R.id.eventTime);
-    }
+        mEventName = (EditText) findViewById(R.id.updateEventName);
+        mEventType = (EditText) findViewById(R.id.updateEventType);
+        mEventLocation = (EditText) findViewById(R.id.updateEventLocation);
+        mEventDate = (TextView) findViewById(R.id.createDateTextBox);
+        mEventTime = (TextView) findViewById(R.id.createTimeTextBox);
+        mEventDescription = (EditText) findViewById(R.id.createEventDescription);
+        mEventDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.requestFocus();
+            }
+        });
 
-    private void setLabels(){
-        imageNameLabel = (TextView) findViewById(R.id.uploadedImageName);
+        mEventDescription.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (event.getAction() & MotionEvent.ACTION_MASK){
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                }
+                return false;
+            }
+        });
+
+
+        mEventImage = (ImageView) findViewById(R.id.createEventImageView);
     }
 
     private void setFirebase(){
@@ -100,6 +147,7 @@ public class NewEventActivity extends AppCompatActivity {
 
     private void setOthers(){
         M_NODE_EVENT = getResources().getString(R.string.M_NODE_EVENT);
+        M_NODE_USER_EVENTS = getResources().getString(R.string.M_NODE_USER_EVENTS);
         myValidator = new MusicEventValidator(ctx);
     }
 
@@ -114,22 +162,25 @@ public class NewEventActivity extends AppCompatActivity {
 
 
     /**
-     *
+     * <h2>Description:</h2><br>
+     * <ul>
+     *     <li>The basic initialization and setup of the create view</li>ú
+     * </ul>
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_event);
+        setContentView(R.layout.activity_create_event);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         setFirebase();
         setButtons();
         setEditTexts();
-        setLabels();
         setOthers();
 
         setupProgressBar();
-
 
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,9 +192,10 @@ public class NewEventActivity extends AppCompatActivity {
             }
         });
 
-        createEventButton.setOnClickListener(new View.OnClickListener() {
+
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 if (createTheEvent()){
                     progressBar.setVisibility(View.GONE);
                     Intent returnIntent = new Intent();
@@ -153,15 +205,33 @@ public class NewEventActivity extends AppCompatActivity {
                 }else{
                     progressBar.setVisibility(View.GONE);
                 }
+
+
+
             }
         });
 
-        cancelCreatorButton.setOnClickListener(new View.OnClickListener() {
+        setDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent returnItent = new Intent();
-                setResult(Activity.RESULT_CANCELED,returnItent);
-                finish();
+            public void onClick(View view) {
+                android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(),"datePicker");
+            }
+        });
+
+        setTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.DialogFragment newFragment = new TimePickerDialog();
+                newFragment.show(getSupportFragmentManager(),"timePicker");
+            }
+        });
+
+        setMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(ctx, GetLocationActivity.class);
+                startActivityForResult(mapIntent, MAP_LOCATION_REQUEST_CODE);
             }
         });
 
@@ -178,11 +248,12 @@ public class NewEventActivity extends AppCompatActivity {
      */
     private boolean createTheEvent() {
 
-        String eventName = eventNameET.getText().toString().trim();
-        String eventType = eventTypeET.getText().toString().trim();
-        String eventLocation = eventLocationET.getText().toString().trim();
-        String eventDate = eventDateET.getText().toString().trim();
-        String eventTime = eventTimeET.getText().toString().trim();
+        String eventName = mEventName.getText().toString().trim();
+        String eventType = mEventType.getText().toString().trim();
+        String eventLocation = mEventLocation.getText().toString().trim();
+        String eventDate = mEventDate.getText().toString().trim();
+        String eventTime = mEventTime.getText().toString().trim();
+        String eventDescription = mEventDescription.getText().toString().trim();
 
         String eventAddedBy = mFirebaseAuth.getCurrentUser().getUid();
         if (mFirebaseAuth.getCurrentUser()==null){
@@ -191,7 +262,13 @@ public class NewEventActivity extends AppCompatActivity {
         }
         //Validation of input
 
-        if(!validateEvent(eventName,eventType,eventLocation,eventDate,eventTime)){
+        MusicEventValidator validator = new MusicEventValidator(ctx);
+        if(!validator.validateEvent(eventName,
+                eventType,
+                eventLocation,
+                eventDate,
+                eventTime,
+                eventDescription)){
             return false;
         }
 
@@ -208,46 +285,30 @@ public class NewEventActivity extends AppCompatActivity {
         }
 
         // This is the new method for pushing an event to the FireBase - Database
-        EventManager eventManager = new EventManager(mDatabaseRef,M_NODE_EVENT)
-                .SetNewEvent(new EventModel.EventModelBuilder(eventAddedBy)
-                        .Name(eventName)
-                        .Type(eventType)
-                        .LocationName(eventLocation)
-                        .Time(eventTime)
-                        .Date(eventDate)
-                        .ImagePath(imagePath)
-                        .build());
+        EventModel eventModel = new EventModel.EventModelBuilder(eventAddedBy)
+                .Name(eventName)
+                .Type(eventType)
+                .LocationName(eventLocation)
+                .Time(eventTime)
+                .Date(eventDate)
+                .ImagePath(imagePath)
+                .Description(eventDescription)
+                .build();
+
+ /*       EventManager eventManager = new EventManager(mDatabaseRef,M_NODE_EVENT)
+                .SetNewEvent(eventModel);
 
         eventManager.PushDataToFirebase();
+*/
+        DatabaseReference mEventReference = mDatabaseRef.getDatabase().getReference(M_NODE_EVENT);
+        String newKey = mEventReference.push().getKey();
+        mEventReference.child(newKey).setValue(eventModel);
 
-        return true;
-    }
+        Map<String,Object> userEventMap = new HashMap<>();
+        userEventMap.put(newKey,eventModel);
 
-    /**
-     * <h2>Description:</h2><br>
-     * <ul>
-     *     <li>This method is the one responsible for validating the user's input.</li>
-     *     <li>It uses the {@link MusicEventValidator}.</li>
-     *     <li>In case the validation fails, it will return false, and also will display the first error in a toast.</li>
-     * </ul>
-     *
-     * @param eventName
-     * @param eventType
-     * @param eventLocation
-     * @param eventDate
-     * @param eventTime
-     * @return
-     */
-    public boolean validateEvent(String eventName, String eventType, String eventLocation, String eventDate, String eventTime){
-        if (
-                !myValidator.isValidSimpleString("Event Name",eventName) ||
-                        !myValidator.isValidSimpleString("Event Type",eventType) ||
-                        !myValidator.isValidSimpleString("Event Location",eventLocation) ||
-                        !myValidator.isValidDate(eventDate) ||
-                        !myValidator.isValidTime(eventTime)
-                ){
-            return false;
-        }
+        mDatabaseRef.child(M_NODE_USER_EVENTS).child(eventAddedBy).setValue(userEventMap);
+
         return true;
     }
 
@@ -280,9 +341,9 @@ public class NewEventActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
             }
         });
-
     }
 
     /**
@@ -316,7 +377,10 @@ public class NewEventActivity extends AppCompatActivity {
                     int cut = picturePath.lastIndexOf('.');
                     if (cut != -1) {
                         imageExtension = picturePath.substring(cut + 1);
-                        imageNameLabel.setText("1 image loaded");
+                        Glide.with(ctx)
+                                .load(imageUri)
+                                .override(250,175)
+                                .into(mEventImage);
                     }
                 }
             } else {
@@ -328,6 +392,41 @@ public class NewEventActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the date is set, this method will be called and it will set the selected date to the corresponding {@link TextView} </li>
+     *     <li>Some modifications are made to make it better looking</li>
+     * </ul>
+     *
+     * @param datePicker
+     * @param year
+     * @param month
+     * @param day
+     */
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        month++;
+        String monthString = month >= 10?month+"" : "0" + month;
+        String dayString = day>=10?day+"":"0"+day;
+        mEventDate.setText(year + "/" + monthString + "/" + dayString);
+    }
 
-
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the time is set, this method will be called and it will set the selected time to the corresponding {@link TextView} </li>
+     *     <li>Some modifications are made to make it better looking</li>
+     * </ul>
+     *
+     * @param timePicker
+     * @param hour
+     * @param minute
+     */
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        String hourString = hour >= 10?hour+"" : "0" + hour;
+        String minuteString = minute>=10?minute+"":"0"+minute;
+        mEventTime.setText(hourString + ":" + minuteString);
+    }
 }

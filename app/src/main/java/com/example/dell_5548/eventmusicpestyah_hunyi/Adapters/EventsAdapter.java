@@ -61,77 +61,11 @@ implements Filterable{
                 }
             });
 
-
         }
     }
 
-    public EventsAdapter(final Context ctx, DatabaseReference eventsDatabase, EventAdapterListener listener){
-        this.eventList = new ArrayList<EventModel>();
-        eventsDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                eventList.clear();
-                for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()){
-                    EventModel eventModel = eventSnapshot.getValue(EventModel.class);
-                    eventModel.setKey(eventSnapshot.getKey());
-                    eventList.add(eventModel);
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ctx,"Database cannot be read!",Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        eventsDatabase.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                EventModel eventModel = dataSnapshot.getValue(EventModel.class);
-                eventModel.setKey(dataSnapshot.getKey());
-                eventList.add(eventModel);
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                EventModel newModel = dataSnapshot.getValue(EventModel.class);
-                String key = dataSnapshot.getKey();
-                for (EventModel eventModel: eventList) {
-                    if(key.equals(eventModel.getKey())){
-                        eventList.remove(eventModel);
-                        eventList.add(newModel);
-                        notifyDataSetChanged();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                String oldKey = dataSnapshot.getKey();
-                for (EventModel eventModel: eventList) {
-                    if(oldKey.equals(eventModel.getKey())){
-                        eventList.remove(eventModel);
-                        notifyDataSetChanged();
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
+    public EventsAdapter(final Context ctx, List<EventModel> eventList, EventAdapterListener listener){
+        this.eventList = eventList;
         this.eventListFiltered = eventList;
         this.ctx = ctx;
         this.listener = listener;

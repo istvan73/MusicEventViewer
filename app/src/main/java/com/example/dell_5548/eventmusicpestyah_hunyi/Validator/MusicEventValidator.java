@@ -28,6 +28,7 @@ public class MusicEventValidator {
 
     private Context ctx;
     private int simpleStringMaxLength = 300;
+    private int descriptionMaxLength = 1000;
     private int validDateLen = 10;
     private int validTimeLen = 5;
 
@@ -59,6 +60,21 @@ public class MusicEventValidator {
 
         if (simpleString == null || strLen==0){
             Toast.makeText(ctx, "Please enter data to " + placeholderName + "!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
+    public boolean isValidDescription(String simpleString){
+        int strLen = simpleString.length();
+        if (strLen > descriptionMaxLength){
+            Toast.makeText(ctx, "The description must be shorter than " + descriptionMaxLength + " characters!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (simpleString == null || strLen==0){
+            Toast.makeText(ctx, "Please enter data to description!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -106,10 +122,46 @@ public class MusicEventValidator {
 
         if (!time.matches("([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]")){
             Toast.makeText(ctx, "Please enter a valid time of a day, like Hour:Second!", Toast.LENGTH_SHORT).show();
+
             return false;
         }
         return true;
     }
 
+    /**
+     *
+     * <h2>Description:</h2><br>
+     * <ul>
+     *     <li>This method is the one responsible for validating the user's input.</li>
+     *     <li>It uses the {@link MusicEventValidator}.</li>
+     *     <li>In case the validation fails, it will return false, and also will display the first error in a toast.</li>
+     * </ul>
+     *
+     * @param eventName
+     * @param eventType
+     * @param eventLocation
+     * @param eventDate
+     * @param eventTime
+     * @return
+     */
+
+    public boolean validateEvent(String eventName,
+                                 String eventType,
+                                 String eventLocation,
+                                 String eventDate,
+                                 String eventTime,
+                                 String eventDescription){
+        if (
+                !isValidSimpleString("Event Name",eventName) ||
+                        !isValidSimpleString("Event Type",eventType) ||
+                        !isValidSimpleString("Event Location",eventLocation) ||
+                        !isValidDate(eventDate) ||
+                        !isValidTime(eventTime) ||
+                        !isValidDescription(eventDescription)
+                ){
+            return false;
+        }
+        return true;
+    }
 
 }

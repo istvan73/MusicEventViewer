@@ -13,13 +13,14 @@ public class EventModel {
     private String time;
     private String type;
     private String imagePath;
+    private String description;
     private String key;
 
     private EventModel(){
 
     }
 
-    public EventModel(String creatorId, String date, String locationName, String name, String time, String type, String imagePath) {
+    public EventModel(String creatorId, String date, String locationName, String name, String time, String type, String imagePath,String description) {
         this.creatorId = creatorId;
         this.date = date;
         this.locationName = locationName;
@@ -27,6 +28,7 @@ public class EventModel {
         this.time = time;
         this.type = type;
         this.imagePath = imagePath;
+        this.description = description;
     }
 
     private EventModel(EventModelBuilder builder) {
@@ -37,6 +39,7 @@ public class EventModel {
         this.time = builder.mTime;
         this.type = builder.mType;
         this.imagePath = builder.mImagePath;
+        this.description = builder.mDescription;
     }
 
     public String getCreatorId() {
@@ -68,10 +71,9 @@ public class EventModel {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public String getDescription() {
+        return description;
     }
-
 
     public String getImagePath() { return imagePath; }
 
@@ -105,6 +107,13 @@ public class EventModel {
         this.imagePath = imagePath;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
 
     public static class EventModelBuilder {
@@ -115,6 +124,7 @@ public class EventModel {
         private String mTime;
         private String mType;
         private String mImagePath;
+        private String mDescription;
 
         public EventModelBuilder(String CreatorId) {
             this.mCreatorId = CreatorId;
@@ -150,6 +160,12 @@ public class EventModel {
             this.mImagePath = mImagePath.length()!=0?mImagePath:null;
             return this;
         }
+
+        public EventModelBuilder Description(String mDescription) {
+            this.mDescription = mDescription;
+            return this;
+        }
+
 
         public EventModel build() {
             return new EventModel(this);

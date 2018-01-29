@@ -17,9 +17,9 @@ import com.example.dell_5548.eventmusicpestyah_hunyi.R;
  * A simple {@link Fragment} subclass.
  */
 public class UserWelcomeFragment extends Fragment implements View.OnClickListener{
-    Button profileButton;
-    Button logOutButton;
-    OnButtonClickedListener mCallback;
+    private Button profileButton;
+    private Button logOutButton;
+    private OnButtonClickedListener mCallback;
 
     public UserWelcomeFragment() {
         // Required empty public constructor
