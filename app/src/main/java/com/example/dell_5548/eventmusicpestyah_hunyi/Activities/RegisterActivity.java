@@ -13,15 +13,19 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.dell_5548.eventmusicpestyah_hunyi.Models.UserModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String M_NODE_USER = "Users";
     private Button mRegisterBT;
     private EditText mEmailET;
     private EditText mNameET;
@@ -131,6 +135,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Toast.makeText(RegisterActivity.this, "Success ;)!", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                             FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmailET.getText().toString(),mPasswordET.getText().toString());
+                            String name = mNameET.getText().toString(),
+                                    userId = FirebaseAuth.getInstance().getUid(),
+                                    email = mEmailET.getText().toString();
+                            // Registering to the database with infos
+                            String mobile = "-",
+                                    gender = "-";
+                            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                            UserModel newUser = new UserModel.UserModelBuilder(name, "-")
+                                    .Email(email)
+                                    .Mobile(mobile)
+                                    .Gender(gender)
+                                    .build();
+                            com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager usrMngr = new com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager(
+                                    db, M_NODE_USER, userId)
+                                    .SetNewUser(newUser);
+                            usrMngr.PushDataToFirebase();
+
                             Intent profilePage = new Intent(getApplicationContext(), UserProfileActivity.class);
                             startActivity(profilePage);
                             finish();
