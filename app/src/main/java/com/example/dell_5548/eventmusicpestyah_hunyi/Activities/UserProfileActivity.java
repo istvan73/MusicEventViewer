@@ -392,7 +392,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     name = mFirebaseAuth.getCurrentUser().getDisplayName();
                     email = mFirebaseAuth.getCurrentUser().getEmail();
                     Uri uri = mFirebaseAuth.getCurrentUser().getPhotoUrl();
-                    
+
 
                     String mobile = "-",
                             gender = "-";
