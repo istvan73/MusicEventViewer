@@ -45,19 +45,7 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    compile 'de.hdodenhof:circleimageview:2.2.0'
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 apply plugin: 'com.google.gms.google-services'

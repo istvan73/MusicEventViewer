@@ -1,73 +1,385 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:layout_marginLeft="20dp"
-    android:layout_marginTop="50dp"
-    tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.UserProfileActivity">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:layout_width="100dp"
-        android:layout_height="120dp"
-        android:id="@+id/prof_picIV"
-        android:src="@drawable/examp_photo"
-        />
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="2dp">
+        android:layout_height="match_parent"
+        android:id="@+id/layout">
 
-        <TextView
-            android:id="@+id/user_nameTV"
+
+        <ImageView
+            android:id="@+id/header_cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="centerCrop"
+
+            android:src="@drawable/examp_photo"
+            app:srcCompat="@drawable/examp_photo" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+
+            android:clickable="true"
+            app:civ_border_width="3dp"
+            app:civ_border_color="#FFFFFFFF"
+
+            android:id="@+id/profile"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@+id/header_cover_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-130dp"
+            android:elevation="5dp"
+            android:padding="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/examp_photo" />
+
+        <RelativeLayout
+            android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name display"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_marginTop="2dp"
-            android:gravity="center"
+            android:layout_below="@+id/header_cover_image"
+            android:background="#ebca0707"
+            android:elevation="4dp"
+            android:paddingBottom="24dp">
+
+
+            <ImageView
+                android:id="@+id/edit_profileIM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+
+                android:src="@android:drawable/ic_menu_edit" />
+
+            <ImageView
+                android:id="@+id/logoutIM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+
+                android:layout_alignTop="@+id/edit_profileIM"
+                android:layout_marginStart="18dp"
+                android:clickable="true"
+                android:src="@android:drawable/ic_lock_power_off" />
+
+            <TextView
+                android:id="@+id/user_nameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:text="Laxman Marothiya"
+                android:textColor="#fff"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/user_ruleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_denotationTV"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="..."
+                android:textColor="#fff"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/user_denotationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_nameTV"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="(Adhyaksh)"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profile_layout"
+            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="20dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+
+            >
+
+            <TextView
+                android:id="@+id/first_nameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="3dp"
+                android:clickable="true"
+                android:text="First Name:"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/first_nameET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:text="-"
+                app:layout_constraintLeft_toRightOf="@+id/first_nameTV"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/last_nameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:text="Last Name:"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/first_nameTV" />
+
+            <EditText
+                android:id="@+id/last_nameET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:text="-"
+                app:layout_constraintLeft_toRightOf="@+id/last_nameTV"
+                app:layout_constraintTop_toBottomOf="@+id/first_nameET" />
+
+            <TextView
+                android:id="@+id/user_emailTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:text="Email: "
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/last_nameTV" />
+
+            <EditText
+                android:id="@+id/user_emailET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:text="marothiatechs@gmail.com"
+                app:layout_constraintLeft_toRightOf="@+id/user_emailTV"
+                app:layout_constraintTop_toBottomOf="@+id/last_nameTV" />
+
+            <TextView
+                android:id="@+id/user_mobileTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="5dp"
+                android:clickable="true"
+                android:text="Mobile: "
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_emailTV" />
+
+            <EditText
+                android:id="@+id/user_mobileET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:text="-"
+                app:layout_constraintLeft_toRightOf="@+id/user_mobileTV"
+                app:layout_constraintTop_toBottomOf="@+id/user_emailET" />
+
+            <TextView
+                android:id="@+id/user_genderTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
+
+                android:clickable="true"
+                android:text="Gender: "
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_mobileTV" />
+
+            <EditText
+                android:id="@+id/user_genderET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:enabled="false"
+                android:text="-"
+                app:layout_constraintLeft_toRightOf="@+id/user_genderTV"
+                app:layout_constraintTop_toBottomOf="@+id/user_mobileET" />
+
+            <TextView
+                android:visibility = "gone"
+                android:id="@+id/user_register_dateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:text="Registered:"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_genderTV" />
+
+            <EditText
+                android:visibility = "gone"
+                android:id="@+id/user_register_dateET"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_margin="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="01/01/2017"
+                app:layout_constraintLeft_toRightOf="@+id/user_register_dateTV"
+                app:layout_constraintTop_toBottomOf="@+id/user_genderET" />
+
+            <TextView
+                android:visibility = "gone"
+                android:id="@+id/approved_byTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+
+                android:text="Approved by: "
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_register_dateTV" />
+
+            <TextView
+                android:id="@+id/approved_byET"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:clickable="true"
+                android:text="Portik Istvan SRL."
+                app:layout_constraintTop_toBottomOf="@+id/user_register_dateET"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+
+
+        </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
+</ScrollView>
+
+    <!--
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.UserProfileActivity">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:id="@+id/prof_picIV"
+            android:src="@drawable/examp_photo"
             />
-        <TextView
-            android:id="@+id/user_emailTV"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Email display"
-            android:textSize="16dp"
-            android:gravity="center"
-            />
-        <Button
-            android:id="@+id/logoutBT"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/logout_bt"
-            />
-        <TextView
-            android:id="@+id/last_visit_textTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Last visited:"
-            android:textSize="16dp"
-            android:gravity="center"
-            />
-        <TextView
-            android:id="@+id/last_loginTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Last visited:"
-            android:textSize="16dp"
-            android:gravity="center"
-            />
-        <Button
-            android:id="@+id/delete_userBT"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="220dp"
-            android:text="@string/delete_user_bt"
-            />
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="2dp">
+
+            <TextView
+                android:id="@+id/user_nameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name display"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/user_emailTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email display"
+                android:textSize="16dp"
+                android:gravity="center"
+                />
+            <Button
+                android:id="@+id/logoutBT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout_bt"
+                />
+            <TextView
+                android:id="@+id/last_visit_textTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last visited:"
+                android:textSize="16dp"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/last_loginTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last visited:"
+                android:textSize="16dp"
+                android:gravity="center"
+                />
+            <Button
+                android:id="@+id/delete_userBT"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="220dp"
+                android:text="@string/delete_user_bt"
+                />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+    -->
