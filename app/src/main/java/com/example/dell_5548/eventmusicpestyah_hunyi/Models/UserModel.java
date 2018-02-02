@@ -27,6 +27,7 @@ public class UserModel {
     private String mUserMobile;
     private String mUserGender;
     private String mUserRegistered;
+    private String mUserProfilePic;
     private List<String> mSubscribes;
 
     private UserModel(){
@@ -36,13 +37,14 @@ public class UserModel {
     public UserModel(String firstName, String lastName,
                      String userEmail, String userMobile,
                      String userGender, String userRegistered,
-                     List<String> subscribes) {
+                     String userProfilePic, List<String> subscribes) {
         this.mFirstName = firstName;
         this.mLastName = lastName;
         this.mUserEmail = userEmail;
         this.mUserMobile = userMobile;
         this.mUserGender = userGender;
         this.mUserRegistered = userRegistered;
+        this.mUserProfilePic = userProfilePic;
         this.mSubscribes = subscribes;
     }
 
@@ -70,6 +72,10 @@ public class UserModel {
         this.mUserRegistered = userRegistered;
     }
 
+    public void setUserProfilePic(String userProfilePic) {
+        this.mUserProfilePic = userProfilePic;
+    }
+
     public void setSubscribes(List<String> subscribes) {
         this.mSubscribes = subscribes;
     }
@@ -81,6 +87,7 @@ public class UserModel {
         this.mUserMobile = builder.mUserMobile;
         this.mUserGender= builder.mUserGender;
         this.mUserRegistered = builder.mUserRegistered;
+        this.mUserProfilePic = builder.mUserProfilePic;
         this.mSubscribes = builder.mSubscribes;
     }
 
@@ -102,6 +109,9 @@ public class UserModel {
     public String getRegistered() {
         return mUserRegistered;
     }
+    public String getUserProfilePic() {
+        return mUserProfilePic;
+    }
 
     public List<String> getSubscribes() {
         return mSubscribes;
@@ -114,6 +124,7 @@ public class UserModel {
         private String mUserMobile;
         private String mUserGender;
         private String mUserRegistered;
+        private String mUserProfilePic;
         private List<String> mSubscribes;
 
         public UserModelBuilder (String FName,String LName) {
@@ -135,6 +146,10 @@ public class UserModel {
         }
         public UserModelBuilder  Registered(String firstName) {
             this.mUserRegistered = firstName;
+            return this;
+        }
+        public UserModelBuilder  ProfilePic(String firstName) {
+            this.mUserProfilePic = firstName;
             return this;
         }
         public UserModelBuilder  Subscribes(List<String> Subscribes) {

@@ -1,62 +1,53 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi.Activities;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.UserManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.*;
-import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
+import com.bumptech.glide.Glide;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Models.UserModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.User;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
-import java.util.concurrent.Callable;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -64,6 +55,9 @@ public class UserProfileActivity extends AppCompatActivity {
     private static final boolean M_EDITABLE = true;
     private static final java.lang.String M_NODE_USER = "Users";
     private static final String M_NODE_USER_PROFILE = "Profile";
+    private static final int RESULT_LOAD_IMAGE = 112;
+
+    private de.hdodenhof.circleimageview.CircleImageView mUserProfilePicIM;
     private ImageView mLogoutIM;
     private ImageView mEditIM;
     private TextView mUserNameTV;
@@ -81,12 +75,19 @@ public class UserProfileActivity extends AppCompatActivity {
     private TextView mUserRegisteredTV;
     private EditText mUserRegisteredET;
 
+    /* image */
+    private Uri imageUri = null;
+    private String imageExtension = null;
+    private StorageReference mStorageRef;
+    /* o */
     private String mOnStopTextMsg = "";
     private boolean mEditModeOn = false;
     private ArrayList mOldParams;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
     private com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager mMainUserMngr;
+    private Drawable mOldProfPic;
+    private Uri mOldProfPicUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,9 @@ public class UserProfileActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         setFirebase();
+
+        mUserProfilePicIM = findViewById(R.id.profile_pic_CIV);
+        mOldProfPic = mUserProfilePicIM.getDrawable();
 
         mLogoutIM = findViewById(R.id.logoutIM);
         mEditIM = findViewById(R.id.edit_profileIM);
@@ -155,6 +159,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 //deleteUser();
                 if (!mEditModeOn) {
+                    imageExtension = null;
+                    imageUri = null;
                     Toast.makeText(UserProfileActivity.this, "Edit mode selected...", Toast.LENGTH_SHORT).show();
                     saveCurrentEditTextFields();
                     setEditableFieldsTo(M_EDITABLE);
@@ -179,6 +185,7 @@ public class UserProfileActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
     }
 
     /**
@@ -191,15 +198,40 @@ public class UserProfileActivity extends AppCompatActivity {
         ListIterator userDetailIter = mOldParams.listIterator();
 
         String userId = mFirebaseAuth.getCurrentUser().getUid();
-        com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager usrMngr =
-                new com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager(mDatabaseRef, "Users", userId)
-                        .SetNewUser(new UserModel.UserModelBuilder(userDetailIter.next().toString(), userDetailIter.next().toString())
-                                .Email(userDetailIter.next().toString())
-                                .Gender(userDetailIter.next().toString())
-                                .Mobile(userDetailIter.next().toString())
-                                .Registered(userDetailIter.next().toString())
-                                .build());
 
+        String imagePath = "-";
+        if (imageUri != null &&
+                imageExtension != null) {
+            String uniqueFileName = UUID.randomUUID().toString().replaceAll("-", "_");
+            imagePath = "";
+            imagePath = imagePath.concat("images/eventImages/" + uniqueFileName + "." + imageExtension);
+
+            saveImageToFirebase(imagePath);
+            Log.i("UPLOADING-STORAGE", "IMAGE:" + imagePath);
+        }
+
+        com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager usrMngr = null;
+        if (!imagePath.equals("-")) {
+            usrMngr = new com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager(mDatabaseRef, "Users", userId)
+                            .SetNewUser(new UserModel.UserModelBuilder(userDetailIter.next().toString(), userDetailIter.next().toString())
+                                    .Email(userDetailIter.next().toString())
+                                    .Gender(userDetailIter.next().toString())
+                                    .Mobile(userDetailIter.next().toString())
+                                    .Registered(userDetailIter.next().toString())
+                                    .ProfilePic(imagePath)
+                                    .build());
+        } else {
+            imagePath = mOldProfPicUrl.getPath();
+            usrMngr =
+                    new com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager(mDatabaseRef, "Users", userId)
+                            .SetNewUser(new UserModel.UserModelBuilder(userDetailIter.next().toString(), userDetailIter.next().toString())
+                                    .Email(userDetailIter.next().toString())
+                                    .Gender(userDetailIter.next().toString())
+                                    .Mobile(userDetailIter.next().toString())
+                                    .Registered(userDetailIter.next().toString())
+                                    .ProfilePic(imagePath)
+                                    .build());
+        }
 //                    Log.i("DATA","UserID:"+ userId+ "\n\tID?:"+ mFirebaseAuth.getUid()+ "\n\t"+ mFirebaseAuth.getCurrentUser().getUid());
 
         if (!usrMngr.PushDataToFirebase()) {
@@ -212,7 +244,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private void setFirebase() {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        //mStorageRef = FirebaseStorage.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     private void closeVirtualKeyboard() {
@@ -237,6 +269,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 userMobile = mUserMoblieET.getText().toString(),
                 userGender = mUserGenderET.getText().toString(),
                 userRegistration = mUserRegisteredET.getText().toString();
+        Drawable photo = mUserProfilePicIM.getDrawable();
         mOldParams = new ArrayList();
         mOldParams.add(userFirstName);
         mOldParams.add(userLastName);
@@ -245,7 +278,8 @@ public class UserProfileActivity extends AppCompatActivity {
         mOldParams.add(userGender);
         mOldParams.add(userRegistration);
 
-        setMainBoardInfos(userFirstName + " " + userLastName, userEmail, "");
+        mOldProfPic = photo;
+        setMainBoardInfos(userFirstName + " " + userLastName, userEmail, mOldProfPic, null, null);
     }
 
     /**
@@ -285,6 +319,7 @@ public class UserProfileActivity extends AppCompatActivity {
             mUserMoblieET.setText(oldParamIter.next());
         if (oldParamIter.hasNext())
             mUserGenderET.setText(oldParamIter.next());
+        mUserProfilePicIM.setImageDrawable(mOldProfPic);
     }
 
     /**
@@ -303,12 +338,27 @@ public class UserProfileActivity extends AppCompatActivity {
             Drawable menuDiscard = getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel);
             mEditIM.setImageDrawable(menuSave);
             mLogoutIM.setImageDrawable(menuDiscard);
+
+            mUserProfilePicIM.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(intent, RESULT_LOAD_IMAGE);
+
+                    Log.i("IMAGE_UPLOAD", "SELECTING IMAGE WAS DONE");
+                }
+            });
+
             // mEditIM.setImageIcon(android.R.drawable.ic_menu_save);
         } else {
             Drawable menuEdit = getResources().getDrawable(android.R.drawable.ic_menu_edit);
             Drawable menuDiscard = getResources().getDrawable(android.R.drawable.ic_lock_power_off);
             mEditIM.setImageDrawable(menuEdit);
             mLogoutIM.setImageDrawable(menuDiscard);
+
+            mUserProfilePicIM.setOnClickListener(null);
         }
     }
 
@@ -359,6 +409,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 userMobile = mUserMoblieET.getText().toString(),
                 userGender = mUserGenderET.getText().toString(),
                 userRegistration = mUserRegisteredET.getText().toString();
+        final ArrayList<Uri> userPhoto = new ArrayList<>();
         Log.i("INFOS:", "Fields: " + userName + ", " + userEmail + ", " + userMobile + ", " + userGender + ", " + userRegistration + ".!.");
 
         String userId = mFirebaseAuth.getUid();
@@ -382,17 +433,54 @@ public class UserProfileActivity extends AppCompatActivity {
                     mOldParams.add(user.getMobile());
                     mOldParams.add(user.getGender());
                     mOldParams.add(user.getRegistered());
+                    mOldParams.add(user.getUserProfilePic());
 
                     name = user.getFirstName() + " " + user.getLastName();
                     email = user.getEmail();
-                    photo = "";
+                    photo = user.getUserProfilePic();
+                    if (photo != null && !photo.equals("-")) {
+                        final Uri uri = Uri.parse(photo.toString());
+                        userPhoto.add(uri);
+                        mOldProfPicUrl = uri;
+                    }
+
+//                    if (uri != null) {
+//                        userPhoto.add(uri);
+//                        StorageReference imageRef = mStorageRef.child(uri.getPath());
+//                        Glide.with(UserProfileActivity.this)
+//                                .using(new FirebaseImageLoader())
+//                                .load(imageRef)
+//                                .placeholder(R.drawable.no_image_available)
+//                                .override(400, 325)
+//                                .fitCenter()
+//                                .into(mUserProfilePicIM);
+//                    } else {
+//                        Glide.with(UserProfileActivity.this)
+//                                .load(R.drawable.examp_photo)
+//                                .override(400, 325)
+//                                .fitCenter()
+//                                .into(mUserProfilePicIM);
+//                    }
+
+
                 } else {
                     // creating one
                     String userId = mFirebaseAuth.getUid();
                     name = mFirebaseAuth.getCurrentUser().getDisplayName();
                     email = mFirebaseAuth.getCurrentUser().getEmail();
                     Uri uri = mFirebaseAuth.getCurrentUser().getPhotoUrl();
+                    try {
+                        userPhoto.add(uri);
+                        InputStream inputStream = getContentResolver().openInputStream(uri);
+                        mOldProfPic = Drawable.createFromStream(inputStream, uri.toString());
+                    } catch (FileNotFoundException e) {
+                        mOldProfPic = getResources().getDrawable(R.drawable.examp_photo);
+                    }
+                    String imagePath = "-";
 
+                    if (uri != null) {
+                        imagePath = uri.getPath();
+                    }
 
                     String mobile = "-",
                             gender = "-";
@@ -401,15 +489,26 @@ public class UserProfileActivity extends AppCompatActivity {
                             .Email(email)
                             .Mobile(mobile)
                             .Gender(gender)
+                            .ProfilePic(imagePath)
                             .build();
                     com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager usrMngr = new com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.UserManager(
                             mDatabaseRef, M_NODE_USER, userId)
                             .SetNewUser(newUser);
                     usrMngr.PushDataToFirebase();
                 }
+
                 setOldParamsToEditTextFields();
                 // Setting up the top fields
-                setMainBoardInfos(name, email, photo);
+
+                String pathToPic = null;
+                Uri uri = null;
+
+                if (!userPhoto.isEmpty()) {
+                    pathToPic = userPhoto.get(0).getPath();
+                    uri = userPhoto.get(0);
+                }
+
+                setMainBoardInfos(name, email, mOldProfPic, pathToPic, uri);
             }
 
             @Override
@@ -435,7 +534,7 @@ public class UserProfileActivity extends AppCompatActivity {
      * <li>@param <i>photo</i> - it gives the user`s new photo url</li>
      * </ul>
      */
-    private void setMainBoardInfos(String name, String email, String photo) {
+    private void setMainBoardInfos(String name, String email, Drawable photo, String photoUri, Uri uri) {
         name.replaceFirst("-", "");
         if (name.endsWith("-")) {
             int indexLastNull = name.lastIndexOf("-");
@@ -444,6 +543,18 @@ public class UserProfileActivity extends AppCompatActivity {
         mUserNameTV.setText(name);
         mUserDenotTV.setText(email);
         //mUserPic...
+        if (photoUri != null) {
+            StorageReference imageRef = mStorageRef.child(uri.getPath());
+            Glide.with(UserProfileActivity.this)
+                    .using(new FirebaseImageLoader())
+                    .load(imageRef)
+                    .fitCenter()
+                    .into(mUserProfilePicIM);
+            mOldProfPic = mUserProfilePicIM.getDrawable();
+        } else {
+            mUserProfilePicIM.setImageDrawable(mOldProfPic);
+        }
+
     }
 
     private boolean makeToast(String text) {
@@ -544,4 +655,84 @@ public class UserProfileActivity extends AppCompatActivity {
         });
         alDialog.show();
     }
+
+    /**
+     * <h2>Description:</h2><br>
+     * <ul>
+     * <li>When the Request code is RESULT_LOAD_IMAGE, it fetches the image's data into the imageUri variable.</li>
+     * <li>The image's extension will be stored in the imageExtension variable.</li>
+     * </ul>
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE) {
+
+            if (resultCode == RESULT_OK && null != data) {
+                imageUri = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(imageUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+
+
+                if (picturePath != null) {
+                    int cut = picturePath.lastIndexOf('.');
+                    if (cut != -1) {
+                        imageExtension = picturePath.substring(cut + 1);
+                        Glide.with(UserProfileActivity.this)
+                                .load(imageUri)
+                                .override(250, 175)
+                                .into(mUserProfilePicIM);
+                    }
+                }
+            } else {
+                Toast.makeText(this, "File was not loaded!", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+    }
+
+    /**
+     * <h2>Description:</h2><br>
+     * <ul>
+     * <li>This method is the one responsible for uploading the event's image to the Firebase Cloud Storage.</li>
+     * <li>If the upload is not successful, it will signal to the user via a {@link Toast}</li>
+     * </ul>
+     *
+     * @param imagePath
+     */
+    private void saveImageToFirebase(String imagePath) {
+        StorageReference eventImageRef = mStorageRef.child(imagePath);
+        StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType("image/jpeg")
+                .build();
+
+
+        UploadTask uploadTask = eventImageRef.putFile(imageUri, metadata);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(UserProfileActivity.this, "We were unable to upload your file.", Toast.LENGTH_LONG).show();
+                Log.i("ERR", e.getMessage());
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+            }
+        });
+    }
+
 }
