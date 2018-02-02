@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MERGING_TOGETHER.iml" filepath="$PROJECT_DIR$/MERGING_TOGETHER.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MusicEventViewer.iml" filepath="$PROJECT_DIR$/MusicEventViewer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

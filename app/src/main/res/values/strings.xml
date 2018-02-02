@@ -96,5 +96,6 @@
     <string name="title_activity_create_event">CreateEventActivity</string>
     <string name="M_NODE_USER_EVENTS">User_Events</string>
     <string name="title_activity_get_location">Map</string>
+    <string name="title_activity_starter">StarterActivity</string>
 
 </resources>

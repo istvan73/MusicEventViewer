@@ -129,10 +129,10 @@ public class UserProfileActivity extends AppCompatActivity {
                 Log.i("LOGOUT", "IM IN ONcLICKlISTENER");
 
                 String title = "LogOut";
-                String message = "Are You sure about logging out? \n get the fuck out here";
+                String message = "Are You sure about logging out?";
                 if (mEditModeOn) {
                     title = "Editing Profile";
-                    message = "Are You sure about discarding changes? \n get the fuck out here";
+                    message = "Are You sure about discarding changes?";
                 }
 
                 makeConvictionAboutUserInput(title, message, new Callable() {

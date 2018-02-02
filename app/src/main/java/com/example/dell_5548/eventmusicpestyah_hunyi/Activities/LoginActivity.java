@@ -285,9 +285,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 // Log.i("GOOGLE", "IM IN GOOGLE-LOGIN:" + mFirebaseUser.getUid() + ";" + mFirebaseUser.getDisplayName() + "; " + mFirebaseUser.getMetadata().getCreationTimestamp() + ";" + mFirebaseUser.getPhotoUrl());
 
                 // Starting the profile activity
-                Intent profilePage = new Intent(this, UserProfileActivity.class);
-                startActivity(profilePage);
-                //onStop();
+//                Intent profilePage = new Intent(this, UserProfileActivity.class);
+//                startActivity(profilePage);
+                // Finishing the screen
+                finish();
                 break;
             case (M_REGISTER_REQ):
                 // if the registering was successfull then we need to log in this user with theese datas

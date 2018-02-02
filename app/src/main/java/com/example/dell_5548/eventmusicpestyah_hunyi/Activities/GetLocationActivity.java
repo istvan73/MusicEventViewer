@@ -1,8 +1,9 @@
-package com.example.dell_5548.eventmusicpestyah_hunyi;
+package com.example.dell_5548.eventmusicpestyah_hunyi.Activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

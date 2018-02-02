@@ -4,32 +4,30 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.dell_5548.eventmusicpestyah_hunyi.Adapters.EventAdapterListener;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Adapters.EventsAdapter;
-import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.EventManager;
-import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.NavbarFragment;
-import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.LoginOrRegisterFragment;
-import com.example.dell_5548.eventmusicpestyah_hunyi.R;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.NavbarFragment;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.UserWelcomeFragment;
-import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
+import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -37,27 +35,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Queue;
 
-public class MainActivity extends AppCompatActivity implements EventAdapterListener,
+public class StarterActivity extends AppCompatActivity implements EventAdapterListener,
         LoginOrRegisterFragment.OnButtonClickedListener,
         UserWelcomeFragment.OnButtonClickedListener,
         NavbarFragment.onNavbarButtonClickedListener
 {
-
     Context ctx = this;
     private final int CREATE_EVENT_REQUEST_CODE = 0;
     private final int LOGIN_REQUEST_CODE = 1;
@@ -68,13 +57,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
 
     private List<EventModel> eventList;
     private ValueEventListener activeEventListener;
-    private ValueEventListener archiveEventListener;
-    private ValueEventListener subscribedEventListener;
     private ChildEventListener activeChildEventListener;
-    private ChildEventListener archiveChildEventListener;
-    private ChildEventListener subscribedChildEventListener;
-
-
 
     private RecyclerView recyclerView;
     private EventsAdapter mAdapter;
@@ -87,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
     private DatabaseReference mEventsReference;
     private DatabaseReference mUserEventsReference = null;
 
-    private Button addEventButton;
+    private FloatingActionButton addEventButton;
 
     private void setFirebase(){
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -113,10 +96,15 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
         M_NODE_USER_EVENTS = getResources().getString(R.string.M_NODE_USER_EVENTS);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_starter);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         eventList = new ArrayList<>();
         activePage = 1;
         //Set up others
@@ -163,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
             mUserEventsReference = null;
         }
 
-        addEventButton = (Button) findViewById(R.id.addNewEventButton);
+        addEventButton = (FloatingActionButton) findViewById(R.id.starterAddEventButton);
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
                 }
             }
         });
-
     }
 
 
@@ -574,6 +561,5 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
 //        archiveChildEventListener;
 //        subscribedChildEventListener;
     }
-
 
 }

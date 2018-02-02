@@ -3,7 +3,6 @@ package com.example.dell_5548.eventmusicpestyah_hunyi.Activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,22 +23,18 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.dell_5548.eventmusicpestyah_hunyi.ClassManagers.EventManager;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.DatePickerFragment;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.TimePickerDialog;
-import com.example.dell_5548.eventmusicpestyah_hunyi.GetLocationActivity;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -52,7 +46,6 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 public class CreateEventActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
