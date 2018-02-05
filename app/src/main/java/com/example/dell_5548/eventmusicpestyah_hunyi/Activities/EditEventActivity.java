@@ -1,6 +1,7 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi.Activities;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,17 +10,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.DatePickerFragment;
+import com.example.dell_5548.eventmusicpestyah_hunyi.Fragments.TimePickerDialog;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Models.EventModel;
 import com.example.dell_5548.eventmusicpestyah_hunyi.R;
 import com.example.dell_5548.eventmusicpestyah_hunyi.Validator.MusicEventValidator;
@@ -41,9 +46,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class EditEventActivity extends AppCompatActivity {
+public class EditEventActivity extends AppCompatActivity implements
+        DatePickerDialog.OnDateSetListener,
+        android.app.TimePickerDialog.OnTimeSetListener{
 
     private final int EDIT_EVENT_REQUEST_CODE = 0;
+    private final int MAP_LOCATION_REQUEST_CODE = 1;
     private final String EVENT_UPDATED = "EVENT_UPDATED";
     private final String EVENT_KEY = "EVENT_KEY";
     private final String ERROR_CODE = "ERROR_CODE";
@@ -59,9 +67,9 @@ public class EditEventActivity extends AppCompatActivity {
     //design components
     private EditText mEventName;
     private EditText mEventType;
-    private EditText mEventDate;
+    private TextView mEventDate;
     private EditText mEventLoc;
-    private EditText mEventTime;
+    private TextView mEventTime;
     private EditText mEventDesc;
     private ImageView mEventImage;
 
@@ -71,6 +79,16 @@ public class EditEventActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     StorageReference mStorageRef;
 
+
+    private Button setDateButton;
+    private Button setTimeButton;
+    private Button setMapButton;
+
+    private void setButtons(){
+        setDateButton = (Button) findViewById(R.id.editEventSetDateButton);
+        setTimeButton = (Button) findViewById(R.id.editEventSetTimeButton);
+        setMapButton = (Button) findViewById(R.id.editEventSetCoordinatesButton);
+    }
 
     private void setFirebase(){
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -86,9 +104,9 @@ public class EditEventActivity extends AppCompatActivity {
     private void setContainers(){
         mEventName = (EditText) findViewById(R.id.updateEventName);
         mEventType = (EditText) findViewById(R.id.updateEventType);
-        mEventDate = (EditText) findViewById(R.id.updateEventDate);
+        mEventDate = (TextView) findViewById(R.id.editEventDateText);
         mEventLoc = (EditText) findViewById(R.id.updateEventLocation);
-        mEventTime = (EditText) findViewById(R.id.updateEventTime);
+        mEventTime = (TextView) findViewById(R.id.editEventTimeText);
         mEventDesc = (EditText) findViewById(R.id.updateEventDescription);
         mEventImage = (ImageView) findViewById(R.id.updateEventImageView);
     }
@@ -104,6 +122,7 @@ public class EditEventActivity extends AppCompatActivity {
         setFirebase();
         setOthers();
         setContainers();
+        setButtons();
 
 
         eventKey = getTextFromBundle(EVENT_KEY,savedInstanceState);
@@ -177,15 +196,35 @@ public class EditEventActivity extends AppCompatActivity {
                 returnIntent.putExtra(EVENT_UPDATED,true);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
-            }else{
-
             }
 
-
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
+
+        setDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(),"datePicker");
+            }
+        });
+
+        setTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v4.app.DialogFragment newFragment = new TimePickerDialog();
+                newFragment.show(getSupportFragmentManager(),"timePicker");
+            }
+        });
+
+        setMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(ctx, GetLocationActivity.class);
+                startActivityForResult(mapIntent, MAP_LOCATION_REQUEST_CODE);
+            }
+        });
+
     }
 
     /**
@@ -347,6 +386,45 @@ public class EditEventActivity extends AppCompatActivity {
 
         }
 
+    }
+
+
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the date is set, this method will be called and it will set the selected date to the corresponding {@link TextView} </li>
+     *     <li>Some modifications are made to make it better looking</li>
+     * </ul>
+     *
+     * @param datePicker
+     * @param year
+     * @param month
+     * @param day
+     */
+    @Override
+    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+        month++;
+        String monthString = month >= 10?month+"" : "0" + month;
+        String dayString = day>=10?day+"":"0"+day;
+        mEventDate.setText(year + "/" + monthString + "/" + dayString);
+    }
+
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>When the time is set, this method will be called and it will set the selected time to the corresponding {@link TextView} </li>
+     *     <li>Some modifications are made to make it better looking</li>
+     * </ul>
+     *
+     * @param timePicker
+     * @param hour
+     * @param minute
+     */
+    @Override
+    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+        String hourString = hour >= 10?hour+"" : "0" + hour;
+        String minuteString = minute>=10?minute+"":"0"+minute;
+        mEventTime.setText(hourString + ":" + minuteString);
     }
 
 }

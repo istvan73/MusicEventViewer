@@ -297,10 +297,7 @@ public class CreateEventActivity extends AppCompatActivity implements
         String newKey = mEventReference.push().getKey();
         mEventReference.child(newKey).setValue(eventModel);
 
-        Map<String,Object> userEventMap = new HashMap<>();
-        userEventMap.put(newKey,eventModel);
-
-        mDatabaseRef.child(M_NODE_USER_EVENTS).child(eventAddedBy).setValue(userEventMap);
+        mDatabaseRef.child(M_NODE_USER_EVENTS).child(eventAddedBy).child(newKey).setValue(eventModel);
 
         return true;
     }

@@ -265,7 +265,7 @@ public class StarterActivity extends AppCompatActivity implements EventAdapterLi
             searchView.setIconified(true);
             return;
         }
-        super.onBackPressed();
+        this.finish();
     }
 
     /**
@@ -411,7 +411,7 @@ public class StarterActivity extends AppCompatActivity implements EventAdapterLi
     }
 
 
-    private boolean isEarlierThanNow(String date, String time){
+    public static boolean isEarlierThanNow(String date, String time){
         Calendar calendar = Calendar.getInstance();
 
         String eventDate = date + " " + time;
@@ -558,8 +558,8 @@ public class StarterActivity extends AppCompatActivity implements EventAdapterLi
 
             }
         };
-//        archiveChildEventListener;
-//        subscribedChildEventListener;
     }
+
+
 
 }

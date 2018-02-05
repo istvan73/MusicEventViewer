@@ -7,6 +7,18 @@
     tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.ShowEventActivity">
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/show_event_subscribe_button"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@+id/include2"
+        app:layout_anchorGravity="bottom|center"
+        app:srcCompat="@android:drawable/btn_star"
+        tools:layout_editor_absoluteX="197dp"
+        tools:layout_editor_absoluteY="596dp" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/show_event_edit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
