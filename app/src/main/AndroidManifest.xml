@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity">
+        <activity android:name=".Activities.StarterActivity">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />

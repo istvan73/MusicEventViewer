@@ -72,11 +72,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void saveUserDatasInIntent(Intent datasToPassBack) {
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-        if(firebaseUser.getDisplayName() != null)
-            datasToPassBack.putExtra("userName", firebaseUser.getDisplayName());
-        if(firebaseUser.getPhotoUrl() != null)
-            datasToPassBack.putExtra("userPhoto", firebaseUser.getPhotoUrl());
-        setResult(RESULT_OK, datasToPassBack);
+        if (firebaseUser != null) {
+            if (firebaseUser.getDisplayName() != null)
+                datasToPassBack.putExtra("userName", firebaseUser.getDisplayName());
+            if (firebaseUser.getPhotoUrl() != null)
+                datasToPassBack.putExtra("userPhoto", firebaseUser.getPhotoUrl());
+            setResult(RESULT_OK, datasToPassBack);
+        }
     }
 
 

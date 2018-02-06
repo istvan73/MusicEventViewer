@@ -24,11 +24,11 @@
             android:layout_height="23dp"
             android:layout_marginEnd="104dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:text="unkonown"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintHorizontal_bias="0.065"
             app:layout_constraintStart_toEndOf="@+id/showEventTimeTag"
             app:layout_constraintTop_toBottomOf="@+id/showEventDateTextfield" />
 
@@ -37,11 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="23dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="unkonown"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/showEventDateTag"
-            app:layout_constraintTop_toBottomOf="@+id/showEventLocationTextfield" />
+            app:layout_constraintTop_toBottomOf="@+id/showEventShowMapsButton" />
 
         <TextView
             android:id="@+id/showEventLocationTextfield"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="28dp"
             android:text="Time:"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -91,13 +91,13 @@
             android:layout_height="24dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="Date:"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintHorizontal_bias="0.079"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/showEventLocationTag" />
+            app:layout_constraintTop_toBottomOf="@+id/showEventShowMapsButton" />
 
         <TextView
             android:id="@+id/showEventLocationTag"
@@ -170,213 +170,28 @@
             app:layout_constraintTop_toBottomOf="@+id/showEventImageView" />
 
         <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="700dp"
+            android:layout_marginTop="884dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/showEventShowMapsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="24dp"
+            android:text="View Google Maps"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showEventLocationTag" />
 
     </android.support.constraint.ConstraintLayout>
 
 
 
 </ScrollView>
-
-
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-    <!--tools:context="com.example.dell_5548.eventmusicpestyah_hunyi.Activities.ShowEventActivity"-->
-    <!--tools:showIn="@layout/activity_show_event">-->
-
-
-    <!--<TextView-->
-        <!--android:id="@+id/uploadedImageName"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventNameLabel"-->
-        <!--android:layout_marginTop="14dp"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/event_viewer_app_name"-->
-        <!--android:textSize="18sp"-->
-        <!--android:visibility="gone"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventTimeLabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventNameLabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_below="@+id/event_viewerTV"-->
-        <!--android:layout_marginStart="36dp"-->
-        <!--android:layout_marginTop="29dp"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/name"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventTypeLabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_above="@+id/event_viewer_eventLocationLabel"-->
-        <!--android:layout_alignEnd="@+id/event_viewer_eventTimeLabel"-->
-        <!--android:layout_marginBottom="54dp"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/type"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventNameLabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventLocationLabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignStart="@+id/eventDateLabel"-->
-        <!--android:layout_below="@+id/eventDateLabel"-->
-        <!--android:layout_marginTop="21dp"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/location"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventTypeLabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventName"-->
-        <!--android:layout_width="264dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBaseline="@+id/event_viewer_eventNameLabel"-->
-        <!--android:layout_alignBottom="@+id/event_viewer_eventNameLabel"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventType"-->
-        <!--android:ems="10"-->
-        <!--android:inputType="textPersonName"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.125"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/event_viewer_eventNameLabel"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventTime"-->
-        <!--android:layout_width="264dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@+id/event_viewer_eventTimeLabel"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventLocation"-->
-        <!--android:ems="10"-->
-        <!--android:inputType="time"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.431"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/event_viewer_eventTimeLabel"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventDate" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventTimeLabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignEnd="@+id/eventDateLabel"-->
-        <!--android:layout_below="@+id/event_viewer_eventLocationLabel"-->
-        <!--android:layout_marginTop="46dp"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/time"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/eventDateLabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventLocation"-->
-        <!--android:layout_width="264dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@+id/event_viewer_eventLocationLabel"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventDate"-->
-        <!--android:ems="10"-->
-        <!--android:inputType="textPersonName"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.43"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/event_viewer_eventLocationLabel"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventType" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventType"-->
-        <!--android:layout_width="264dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBaseline="@+id/event_viewer_eventTypeLabel"-->
-        <!--android:layout_alignBottom="@+id/event_viewer_eventTypeLabel"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventDate"-->
-        <!--android:ems="10"-->
-        <!--android:inputType="textPersonName"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.383"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/event_viewer_eventTypeLabel"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventName" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewerTV"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignStart="@+id/uploadedImageName"-->
-        <!--android:layout_below="@+id/uploadedImageName"-->
-        <!--android:text="@string/event_text_view"-->
-        <!--android:textColor="@color/common_google_signin_btn_text_light_default"-->
-        <!--android:textSize="30sp"-->
-        <!--android:layout_marginTop="50dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.168"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/eventDateLabel"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignStart="@+id/uploadedImageName"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:labelFor="@+id/event_viewer_eventTime"-->
-        <!--android:text="@string/date"-->
-        <!--android:textSize="18sp"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventLocationLabel" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/event_viewer_eventDate"-->
-        <!--android:layout_width="264dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignBottom="@+id/eventDateLabel"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_toEndOf="@+id/event_viewer_eventNameLabel"-->
-        <!--android:ems="10"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.26"-->
-        <!--app:layout_constraintStart_toEndOf="@+id/eventDateLabel"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/event_viewer_eventLocation" />-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/event_viewer_imageView"-->
-        <!--android:layout_width="70dp"-->
-        <!--android:layout_height="70dp"-->
-        <!--android:layout_above="@+id/event_viewer_eventName"-->
-        <!--android:layout_alignEnd="@+id/event_viewer_eventName"-->
-        <!--android:layout_marginBottom="22dp"-->
-        <!--android:layout_marginEnd="53dp"-->
-        <!--app:srcCompat="@android:drawable/btn_star_big_off" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/event_viewer_subscribeBT"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignStart="@+id/event_viewer_eventLocationLabel"-->
-        <!--android:layout_marginBottom="37dp"-->
-        <!--android:text="@string/event_viewer_subscribe" />-->
-
-
-<!--</RelativeLayout>-->
-
 

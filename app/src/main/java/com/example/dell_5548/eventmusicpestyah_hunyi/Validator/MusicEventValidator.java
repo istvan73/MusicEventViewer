@@ -150,14 +150,17 @@ public class MusicEventValidator {
                                  String eventLocation,
                                  String eventDate,
                                  String eventTime,
-                                 String eventDescription){
+                                 String eventDescription,
+                                 String eventCoords
+    ){
         if (
                 !isValidSimpleString("Event Name",eventName) ||
                         !isValidSimpleString("Event Type",eventType) ||
                         !isValidSimpleString("Event Location",eventLocation) ||
                         !isValidDate(eventDate) ||
                         !isValidTime(eventTime) ||
-                        !isValidDescription(eventDescription)
+                        !isValidDescription(eventDescription) ||
+                        !isValidSimpleString("Coordinates", eventCoords)
                 ){
             return false;
         }

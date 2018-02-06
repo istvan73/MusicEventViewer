@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,20 +48,23 @@ public class ShowEventActivity extends AppCompatActivity {
     private ImageView mEventImage;
 
     private final int EDIT_EVENT_REQUEST_CODE = 0;
+    private static final int M_GOOGLE_MAPS_CLICK = 987;
+    private final String COORDINATES_KEY = "COORDINATES_KEY";
     private final String EVENT_KEY = "EVENT_KEY";
     private final String ERROR_CODE = "ERROR_CODE";
     private String M_NODE_EVENT;
     private String M_NODE_USER_EVENTS;
 
-    StorageReference mStorageRef;
-    FirebaseAuth mFirebaseAuth;
-    DatabaseReference mDatabaseRef;
-    DatabaseReference mEventReference;
+    private StorageReference mStorageRef;
+    private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference mEventReference;
 
     private String eventKey;
     private Context ctx = this;
     private EventModel eventModel;
     private ValueEventListener myVEL;
+    private boolean isUserSubscribed = false;
 
 
     private void setFirebase(){
@@ -95,7 +100,8 @@ public class ShowEventActivity extends AppCompatActivity {
 
         FloatingActionButton edit_fab = (FloatingActionButton) findViewById(R.id.show_event_edit_button);
         FloatingActionButton delete_fab = (FloatingActionButton) findViewById(R.id.show_event_delete_button);
-
+        FloatingActionButton subscribe_fab = (FloatingActionButton) findViewById(R.id.show_event_subscribe_button);
+        Button showMapButton = (Button) findViewById(R.id.showEventShowMapsButton);
         // Setting
 
         eventKey = getTextFromBundle(EVENT_KEY,savedInstanceState);
@@ -114,6 +120,7 @@ public class ShowEventActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventModel = dataSnapshot.getValue(EventModel.class);
+                eventModel.setKey(dataSnapshot.getKey());
                 mEventName.setText(eventModel.getName());
                 mEventType.setText(eventModel.getType());
                 mEventLoc.setText(eventModel.getLocationName());
@@ -153,53 +160,177 @@ public class ShowEventActivity extends AppCompatActivity {
         edit_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent editEventIntent = new Intent(ctx, EditEventActivity.class);
-                editEventIntent.putExtra(EVENT_KEY,eventKey);
-                startActivityForResult(editEventIntent, EDIT_EVENT_REQUEST_CODE);
+                if (mFirebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(ctx,"You need to log in first!",Toast.LENGTH_SHORT).show();
+                } else if (!mFirebaseAuth.getCurrentUser().getUid().equals(eventModel.getCreatorId())){
+                    Toast.makeText(ctx,"Only the event's creator may update it!",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent editEventIntent = new Intent(ctx, EditEventActivity.class);
+                    editEventIntent.putExtra(EVENT_KEY, eventKey);
+                    startActivityForResult(editEventIntent, EDIT_EVENT_REQUEST_CODE);
+                }
             }
         });
 
         delete_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-                builder.setMessage("Do you really want to delete this event?")
-                        .setTitle("Deleting event");
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                builder.setPositiveButton("Deltete it!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        mEventReference.removeEventListener(myVEL);
-                        Map<String,Object> updateMap = new HashMap<>();
-                        updateMap.put("/" + M_NODE_EVENT + "/" + eventKey,null);
-                        updateMap.put("/" + M_NODE_USER_EVENTS + "/" + eventModel.getCreatorId() + "/" + eventKey,null);
-                        if (eventModel.getImagePath()!=null) {
-                            StorageReference mImageRef = mStorageRef.child(eventModel.getImagePath());
-                            mImageRef.delete();
+                if (mFirebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(ctx,"You need to log in first!",Toast.LENGTH_SHORT).show();
+                } else if (!mFirebaseAuth.getCurrentUser().getUid().equals(eventModel.getCreatorId())){
+                    Toast.makeText(ctx,"Only the event's creator may delete it!",Toast.LENGTH_SHORT).show();
+                }
+                else {
 
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                    builder.setMessage("Do you really want to delete this event?")
+                            .setTitle("Deleting event");
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
                         }
+                    });
+                    builder.setPositiveButton("Deltete it!", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mEventReference.removeEventListener(myVEL);
+                            Map<String, Object> updateMap = new HashMap<>();
+                            updateMap.put("/" + M_NODE_EVENT + "/" + eventKey, null);
+                            updateMap.put("/" + M_NODE_USER_EVENTS + "/" + eventModel.getCreatorId() + "/" + eventKey, null);
+                            if (eventModel.getImagePath() != null) {
+                                StorageReference mImageRef = mStorageRef.child(eventModel.getImagePath());
+                                mImageRef.delete();
 
-                        mDatabaseRef.updateChildren(updateMap);
+                            }
+
+                            mDatabaseRef.updateChildren(updateMap);
 
 
-                        dialogInterface.dismiss();
-                        finish();
+                            dialogInterface.dismiss();
+                            finish();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+        });
+
+        subscribe_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+                if (mFirebaseAuth.getCurrentUser() == null) {
+                    Toast.makeText(ctx, "You need to be logged in first!", Toast.LENGTH_SHORT).show();
+                } else if (StarterActivity.isEarlierThanNow(eventModel.getDate(), eventModel.getTime())) {
+                    Toast.makeText(ctx, "The event is already over!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isUserSubscribed) {
+                        builder.setMessage("Would you like to unsubscribe to this event?")
+                                .setTitle("Unsubscribe event");
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                        builder.setPositiveButton("Unsubscribe!", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                if (mFirebaseAuth.getCurrentUser() == null) {
+                                    Toast.makeText(ctx, "You need to be logged in first!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    String unsubscriberUser = mFirebaseAuth.getCurrentUser().getUid();
+                                    Map<String, Object> updateMap = new HashMap<>();
+                                    updateMap.put("/" + M_NODE_USER_EVENTS + "/" + unsubscriberUser + "/" + eventKey, null);
+
+                                    mDatabaseRef.updateChildren(updateMap);
+                                    dialogInterface.dismiss();
+                                    Toast.makeText(ctx, "You have succesfully unubscribed!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+
+                        builder.setMessage("Would you like to subscribe to this event?")
+                                .setTitle("Subscribe event");
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                        builder.setPositiveButton("Subscribe!", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                String eventAddedBy = mFirebaseAuth.getCurrentUser().getUid();
+                                mDatabaseRef.child(M_NODE_USER_EVENTS).child(eventAddedBy).child(eventModel.getKey()).setValue(eventModel);
+                                dialogInterface.dismiss();
+                                Toast.makeText(ctx, "You have succesfully subscribed!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
 
 
+        showMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(ctx, MapsActivity.class);
+                mapIntent.putExtra(COORDINATES_KEY, eventModel.getCoordinates());
+                startActivityForResult(mapIntent, M_GOOGLE_MAPS_CLICK);
+            }
+        });
+
+        if (mFirebaseAuth.getCurrentUser() != null){
+            String userId = mFirebaseAuth.getCurrentUser().getUid();
+
+            DatabaseReference mUserEventReference = mDatabaseRef.child(M_NODE_USER_EVENTS).child(userId);
+            mUserEventReference.orderByKey().equalTo(eventKey).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null || dataSnapshot.getChildren()==null){
+                        isUserSubscribed = false;
+                    } else {
+                        isUserSubscribed = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+
+
+
     }
 
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>From a bundle, or saved instance state, this method will get the text and return it</li>
+     *     <li>Only works with strings</li>
+     * </ul>
+     * @param key
+     * @param savedInstanceState
+     * @return
+     */
     private String getTextFromBundle(String key, Bundle savedInstanceState){
         String textToReturn;
         if (savedInstanceState == null) {
@@ -215,6 +346,12 @@ public class ShowEventActivity extends AppCompatActivity {
         return textToReturn;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        outState.putString(EVENT_KEY,eventModel.getKey());
+    }
 }
 
 
