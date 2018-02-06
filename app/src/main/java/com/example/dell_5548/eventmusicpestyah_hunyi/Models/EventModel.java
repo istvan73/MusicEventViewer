@@ -1,5 +1,7 @@
 package com.example.dell_5548.eventmusicpestyah_hunyi.Models;
 
+import java.io.StringReader;
+
 /**
  * Created by DELL_5548 on 12/30/2017.
  */
@@ -14,13 +16,22 @@ public class EventModel {
     private String type;
     private String imagePath;
     private String description;
+    private String coordinates;
     private String key;
 
     private EventModel(){
 
     }
 
-    public EventModel(String creatorId, String date, String locationName, String name, String time, String type, String imagePath,String description) {
+    public EventModel(String creatorId,
+                      String date,
+                      String locationName,
+                      String name,
+                      String time,
+                      String type,
+                      String imagePath,
+                      String description,
+                      String coordinates) {
         this.creatorId = creatorId;
         this.date = date;
         this.locationName = locationName;
@@ -29,6 +40,7 @@ public class EventModel {
         this.type = type;
         this.imagePath = imagePath;
         this.description = description;
+        this.coordinates = coordinates;
     }
 
     private EventModel(EventModelBuilder builder) {
@@ -40,6 +52,7 @@ public class EventModel {
         this.type = builder.mType;
         this.imagePath = builder.mImagePath;
         this.description = builder.mDescription;
+        this.coordinates = builder.mCoordinates;
     }
 
     public String getCreatorId() {
@@ -76,6 +89,14 @@ public class EventModel {
     }
 
     public String getImagePath() { return imagePath; }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
 
 
 
@@ -125,6 +146,7 @@ public class EventModel {
         private String mType;
         private String mImagePath;
         private String mDescription;
+        private String mCoordinates;
 
         public EventModelBuilder(String CreatorId) {
             this.mCreatorId = CreatorId;
@@ -165,6 +187,12 @@ public class EventModel {
             this.mDescription = mDescription;
             return this;
         }
+
+        public EventModelBuilder Coordinates(String mCoordinates) {
+            this.mCoordinates = mCoordinates;
+            return this;
+        }
+
 
 
         public EventModel build() {

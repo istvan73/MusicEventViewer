@@ -43,6 +43,8 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -65,6 +67,7 @@ public class CreateEventActivity extends AppCompatActivity implements
     private EditText mEventLocation;
     private EditText mEventDescription;
 
+    private TextView mEventCoordinates;
     private TextView mEventDate;
     private TextView mEventTime;
 
@@ -77,6 +80,7 @@ public class CreateEventActivity extends AppCompatActivity implements
     //    Others
     private Context ctx = this;
     private static int RESULT_LOAD_IMAGE = 2;
+    private static final int M_GOOGLE_MAPS_CLICK = 987;
     private String imageExtension = null;
     private Uri imageUri = null;
     private String M_NODE_EVENT;
@@ -85,7 +89,6 @@ public class CreateEventActivity extends AppCompatActivity implements
     private final String NEW_EVENT_CREATED = "NEW_EVENT_CREATED";
     private ProgressBar progressBar;
     private ImageView mEventImage;
-    private final int MAP_LOCATION_REQUEST_CODE = 0;
 
 
     private void setButtons(){
@@ -96,7 +99,7 @@ public class CreateEventActivity extends AppCompatActivity implements
         fab = (FloatingActionButton) findViewById(R.id.fab);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     private void setEditTexts(){
 
         //Creating references for EditText views
@@ -105,8 +108,11 @@ public class CreateEventActivity extends AppCompatActivity implements
         mEventType = (EditText) findViewById(R.id.updateEventType);
         mEventLocation = (EditText) findViewById(R.id.updateEventLocation);
         mEventDate = (TextView) findViewById(R.id.createDateTextBox);
+        mEventCoordinates = (TextView) findViewById(R.id.createCoordinatesTextBox);
         mEventTime = (TextView) findViewById(R.id.createTimeTextBox);
+
         mEventDescription = (EditText) findViewById(R.id.createEventDescription);
+
         mEventDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -223,8 +229,8 @@ public class CreateEventActivity extends AppCompatActivity implements
         setMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(ctx, GetLocationActivity.class);
-                startActivityForResult(mapIntent, MAP_LOCATION_REQUEST_CODE);
+                Intent mapIntent = new Intent(ctx, MapsActivity.class);
+                startActivityForResult(mapIntent, M_GOOGLE_MAPS_CLICK);
             }
         });
 
@@ -247,6 +253,7 @@ public class CreateEventActivity extends AppCompatActivity implements
         String eventDate = mEventDate.getText().toString().trim();
         String eventTime = mEventTime.getText().toString().trim();
         String eventDescription = mEventDescription.getText().toString().trim();
+        String eventCoordinates = mEventCoordinates.getText().toString().trim();
 
         String eventAddedBy = mFirebaseAuth.getCurrentUser().getUid();
         if (mFirebaseAuth.getCurrentUser()==null){
@@ -261,7 +268,8 @@ public class CreateEventActivity extends AppCompatActivity implements
                 eventLocation,
                 eventDate,
                 eventTime,
-                eventDescription)){
+                eventDescription,
+                eventCoordinates)){
             return false;
         }
 
@@ -286,6 +294,7 @@ public class CreateEventActivity extends AppCompatActivity implements
                 .Date(eventDate)
                 .ImagePath(imagePath)
                 .Description(eventDescription)
+                .Coordinates(eventCoordinates)
                 .build();
 
  /*       EventManager eventManager = new EventManager(mDatabaseRef,M_NODE_EVENT)
@@ -379,6 +388,25 @@ public class CreateEventActivity extends AppCompatActivity implements
 
 
         }
+
+        if (requestCode == M_GOOGLE_MAPS_CLICK) {
+            if (resultCode == RESULT_OK) {
+                double latitude, longitude;
+                latitude = data.getDoubleExtra("latitude", 0);
+                longitude = data.getDoubleExtra("longitude", 0);
+                NumberFormat formatter = new DecimalFormat("#0.0000");
+                mEventCoordinates.setText("X:"+ formatter.format(latitude) + "\nY:" + formatter.format(longitude));
+                Toast.makeText(this, "Ltd:" + latitude + ";Lng:" + longitude, Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Selection failed:", Toast.LENGTH_SHORT).show();
+                double latitude, longitude;
+                latitude = 0;
+                longitude = 0;
+                Toast.makeText(this, "Ltd:" + latitude + ";Lng:" + longitude, Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
 
     }
 

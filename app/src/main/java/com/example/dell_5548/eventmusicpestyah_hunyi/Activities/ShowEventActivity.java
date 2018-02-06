@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class ShowEventActivity extends AppCompatActivity {
     private ImageView mEventImage;
 
     private final int EDIT_EVENT_REQUEST_CODE = 0;
+    private static final int M_GOOGLE_MAPS_CLICK = 987;
+    private final String COORDINATES_KEY = "COORDINATES_KEY";
     private final String EVENT_KEY = "EVENT_KEY";
     private final String ERROR_CODE = "ERROR_CODE";
     private String M_NODE_EVENT;
@@ -98,6 +101,7 @@ public class ShowEventActivity extends AppCompatActivity {
         FloatingActionButton edit_fab = (FloatingActionButton) findViewById(R.id.show_event_edit_button);
         FloatingActionButton delete_fab = (FloatingActionButton) findViewById(R.id.show_event_delete_button);
         FloatingActionButton subscribe_fab = (FloatingActionButton) findViewById(R.id.show_event_subscribe_button);
+        Button showMapButton = (Button) findViewById(R.id.showEventShowMapsButton);
         // Setting
 
         eventKey = getTextFromBundle(EVENT_KEY,savedInstanceState);
@@ -280,6 +284,16 @@ public class ShowEventActivity extends AppCompatActivity {
             }
         });
 
+
+        showMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapIntent = new Intent(ctx, MapsActivity.class);
+                mapIntent.putExtra(COORDINATES_KEY, eventModel.getCoordinates());
+                startActivityForResult(mapIntent, M_GOOGLE_MAPS_CLICK);
+            }
+        });
+
         if (mFirebaseAuth.getCurrentUser() != null){
             String userId = mFirebaseAuth.getCurrentUser().getUid();
 
@@ -303,8 +317,20 @@ public class ShowEventActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
+    /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>From a bundle, or saved instance state, this method will get the text and return it</li>
+     *     <li>Only works with strings</li>
+     * </ul>
+     * @param key
+     * @param savedInstanceState
+     * @return
+     */
     private String getTextFromBundle(String key, Bundle savedInstanceState){
         String textToReturn;
         if (savedInstanceState == null) {

@@ -423,6 +423,14 @@ public class StarterActivity extends AppCompatActivity implements EventAdapterLi
         return true;
     }
 
+
+    /**
+     /**
+     *<h2>Description:</h2><br>
+     * <ul>
+     *     <li>Initializes the ValueEventListener and ChildEventListener</li>
+     * </ul>
+     */
     private void setEventListeners(){
         activeEventListener = new ValueEventListener() {
             @Override

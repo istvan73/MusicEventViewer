@@ -42,6 +42,8 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -50,8 +52,11 @@ public class EditEventActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         android.app.TimePickerDialog.OnTimeSetListener{
 
+
     private final int EDIT_EVENT_REQUEST_CODE = 0;
     private final int MAP_LOCATION_REQUEST_CODE = 1;
+    private static final int M_GOOGLE_MAPS_CLICK = 987;
+    private final String COORDINATES_KEY = "COORDINATES_KEY";
     private final String EVENT_UPDATED = "EVENT_UPDATED";
     private final String EVENT_KEY = "EVENT_KEY";
     private final String ERROR_CODE = "ERROR_CODE";
@@ -72,7 +77,7 @@ public class EditEventActivity extends AppCompatActivity implements
     private TextView mEventTime;
     private EditText mEventDesc;
     private ImageView mEventImage;
-
+    private TextView mEventCoordinates;
 
     //    Firebase
     private FirebaseAuth mFirebaseAuth;
@@ -108,6 +113,7 @@ public class EditEventActivity extends AppCompatActivity implements
         mEventLoc = (EditText) findViewById(R.id.updateEventLocation);
         mEventTime = (TextView) findViewById(R.id.editEventTimeText);
         mEventDesc = (EditText) findViewById(R.id.updateEventDescription);
+        mEventCoordinates = (TextView) findViewById(R.id.editEventCoordinatesText);
         mEventImage = (ImageView) findViewById(R.id.updateEventImageView);
     }
 
@@ -159,6 +165,7 @@ public class EditEventActivity extends AppCompatActivity implements
                 mEventDate.setText(oldModel.getDate());
                 mEventTime.setText(oldModel.getTime());
                 mEventDesc.setText(oldModel.getDescription());
+                mEventCoordinates.setText(oldModel.getCoordinates());
 
                 if (oldModel.getImagePath()!= null) {
                     StorageReference imageRef = mStorageRef.child(oldModel.getImagePath());
@@ -220,8 +227,9 @@ public class EditEventActivity extends AppCompatActivity implements
         setMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mapIntent = new Intent(ctx, GetLocationActivity.class);
-                startActivityForResult(mapIntent, MAP_LOCATION_REQUEST_CODE);
+                Intent mapIntent = new Intent(ctx, MapsActivity.class);
+                mapIntent.putExtra(COORDINATES_KEY, oldModel.getCoordinates());
+                startActivityForResult(mapIntent, M_GOOGLE_MAPS_CLICK);
             }
         });
 
@@ -270,6 +278,7 @@ public class EditEventActivity extends AppCompatActivity implements
         String eventDate = mEventDate.getText().toString().trim();
         String eventTime = mEventTime.getText().toString().trim();
         String eventDesc = mEventDesc.getText().toString().trim();
+        String eventCoord = mEventCoordinates.getText().toString().trim();
 
         String eventAddedBy = oldModel.getCreatorId();
         if (mFirebaseAuth.getCurrentUser()==null){
@@ -278,7 +287,7 @@ public class EditEventActivity extends AppCompatActivity implements
         }
         //Validation of input
         MusicEventValidator validator = new MusicEventValidator(ctx);
-        if(!validator.validateEvent(eventName,eventType,eventLocation,eventDate,eventTime,eventDesc)){
+        if(!validator.validateEvent(eventName,eventType,eventLocation,eventDate,eventTime,eventDesc,eventCoord)){
             return false;
         }
 
@@ -308,6 +317,7 @@ public class EditEventActivity extends AppCompatActivity implements
                         .Date(eventDate)
                         .ImagePath(imagePath)
                         .Description(eventDesc)
+                        .Coordinates(eventCoord)
                         .build();
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -384,6 +394,24 @@ public class EditEventActivity extends AppCompatActivity implements
             }
 
 
+        }
+
+        if (requestCode == M_GOOGLE_MAPS_CLICK) {
+            if (resultCode == RESULT_OK) {
+                double latitude, longitude;
+                latitude = data.getDoubleExtra("latitude", 0);
+                longitude = data.getDoubleExtra("longitude", 0);
+                NumberFormat formatter = new DecimalFormat("#0.0000");
+                mEventCoordinates.setText("X:"+ formatter.format(latitude) + "\nY:" + formatter.format(longitude));
+                Toast.makeText(this, "Ltd:" + latitude + ";Lng:" + longitude, Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Selection failed:", Toast.LENGTH_SHORT).show();
+                double latitude, longitude;
+                latitude = 0;
+                longitude = 0;
+                Toast.makeText(this, "Ltd:" + latitude + ";Lng:" + longitude, Toast.LENGTH_SHORT).show();
+
+            }
         }
 
     }
