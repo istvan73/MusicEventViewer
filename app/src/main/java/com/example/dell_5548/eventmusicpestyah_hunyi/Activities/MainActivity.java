@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements EventAdapterListe
 //
         }
 
-        mFirebaseAuth.signInWithEmailAndPassword("testhun@email.com", "testHun");
+        //mFirebaseAuth.signInWithEmailAndPassword("testhun@email.com", "testHun");
     }
 
     private void setOthers(){
