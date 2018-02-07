@@ -51,12 +51,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         mCoordinates = getTextFromBundle(COORDINATES_KEY,savedInstanceState);
-        String xTemp = mCoordinates.substring(mCoordinates.lastIndexOf('X')+2,mCoordinates.lastIndexOf('Y')-1);
-        String yTemp = mCoordinates.substring(mCoordinates.lastIndexOf("Y")+2);
+        if (mCoordinates != null && mCoordinates.length()!=0) {
+            String xTemp = mCoordinates.substring(mCoordinates.lastIndexOf('X') + 2, mCoordinates.lastIndexOf('Y') - 1);
+            String yTemp = mCoordinates.substring(mCoordinates.lastIndexOf("Y") + 2);
 
-        XCoord = Double.parseDouble(xTemp);
-        YCoord = Double.parseDouble(yTemp);
-
+            XCoord = Double.parseDouble(xTemp);
+            YCoord = Double.parseDouble(yTemp);
+        }else{
+            XCoord = 10;
+            YCoord = 10;
+        }
         resultText = (TextView) findViewById(R.id.dragg_result);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()

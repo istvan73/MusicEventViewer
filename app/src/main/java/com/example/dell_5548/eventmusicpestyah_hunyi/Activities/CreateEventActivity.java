@@ -86,6 +86,7 @@ public class CreateEventActivity extends AppCompatActivity implements
     private String M_NODE_EVENT;
     private String M_NODE_USER_EVENTS;
     private MusicEventValidator myValidator;
+    private final String COORDINATES_KEY = "COORDINATES_KEY";
     private final String NEW_EVENT_CREATED = "NEW_EVENT_CREATED";
     private ProgressBar progressBar;
     private ImageView mEventImage;
@@ -117,6 +118,7 @@ public class CreateEventActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 view.requestFocus();
+                view.setEnabled(true);
             }
         });
 
@@ -230,6 +232,7 @@ public class CreateEventActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Intent mapIntent = new Intent(ctx, MapsActivity.class);
+                mapIntent.putExtra(COORDINATES_KEY, "");
                 startActivityForResult(mapIntent, M_GOOGLE_MAPS_CLICK);
             }
         });
